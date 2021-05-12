@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2021-05-12T22:16:48.631Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36" etag="IFB4HZN5sYDh7xCClxY3" version="14.5.10" type="github">
+<mxfile host="app.diagrams.net" modified="2021-05-12T22:37:04.404Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36" etag="hi5fuus7U_DwzU628bBh" version="14.5.10" type="github">
   <diagram id="hoha5xXqs4-0nP36PvAW" name="Page-1">
-    <mxGraphModel dx="459" dy="285" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="554" dy="344" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -66,6 +66,56 @@
         </mxCell>
         <mxCell id="3Rin0OS6iymKsQKwY67Z-19" value="Login response" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;" vertex="1" parent="3Rin0OS6iymKsQKwY67Z-20">
           <mxGeometry width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="3Rin0OS6iymKsQKwY67Z-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.006;entryY=0.37;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="3Rin0OS6iymKsQKwY67Z-21" target="3Rin0OS6iymKsQKwY67Z-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3Rin0OS6iymKsQKwY67Z-21" value="Unauthenticated user" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.user;" vertex="1" parent="1">
+          <mxGeometry x="190" y="1810" width="110" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="3Rin0OS6iymKsQKwY67Z-48" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="630" y="1813" as="sourcePoint" />
+            <mxPoint x="990" y="1813" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="750" y="1813" />
+              <mxPoint x="750" y="1813" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3Rin0OS6iymKsQKwY67Z-22" value="API Gateway" style="rounded=0;whiteSpace=wrap;html=1;rotation=0;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="510" y="1780" width="120" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="3Rin0OS6iymKsQKwY67Z-50" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=-0.035;entryY=0.224;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="3Rin0OS6iymKsQKwY67Z-23" target="3Rin0OS6iymKsQKwY67Z-29">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3Rin0OS6iymKsQKwY67Z-23" value="User service" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="990" y="1799" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="3Rin0OS6iymKsQKwY67Z-29" value="User datastore" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.database;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1360" y="1799" width="120" height="131" as="geometry" />
+        </mxCell>
+        <mxCell id="3Rin0OS6iymKsQKwY67Z-38" value="Profile verification request" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="324" y="1849" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="3Rin0OS6iymKsQKwY67Z-42" value="User service" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="970" y="2020" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3Rin0OS6iymKsQKwY67Z-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3Rin0OS6iymKsQKwY67Z-43" target="3Rin0OS6iymKsQKwY67Z-22">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="1530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3Rin0OS6iymKsQKwY67Z-43" value="Admin" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.user;" vertex="1" parent="1">
+          <mxGeometry x="510" y="1420" width="110" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="3Rin0OS6iymKsQKwY67Z-49" value="Verification request" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="740" y="1795" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="3Rin0OS6iymKsQKwY67Z-51" value="Save profile verification request" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="1812" width="180" height="20" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
