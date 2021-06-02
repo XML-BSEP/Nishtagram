@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extra_config": {},
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "DukeStrategic",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/ping",
+      "method": "GET",
+      "output_encoding": "json",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ping8084",
+          "host": [
+            "http://127.0.0.1:8084"
+          ],
+          "encoding": "json",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    }
+  ]
+}
