@@ -1,0 +1,123 @@
+{
+  "version": 2,
+  "port": 8080,
+  "extra_config": {
+    "github_com/devopsfaith/krakend-cors": {
+      "allow_origins": [
+        "*"
+      ],
+      "allow_methods": [
+        "GET",
+        "HEAD",
+        "POST",
+        "OPTIONS",
+        "DELETE",
+        "PUT",
+        "PATCH"
+      ],
+      "expose_headers": [
+        "Content-Length",
+        "Content-Type"
+      ],
+      "max_age": "12h",
+      "allow_headers": [
+        "*"
+      ],
+      "allow_credentials": true,
+      "debug": false
+
+    },
+    "github_com/devopsfaith/krakend-gologging": {
+      "level": "ERROR",
+      "prefix": "[KRAKEND]",
+      "syslog": false,
+      "stdout": true,
+      "format": "default"
+    }
+  },
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "Duke strategic",
+  "tls": {
+    "public_key": "certificate/cert.pem",
+    "private_key": "certificate/key.pem"
+  },
+  "endpoints": [
+    {
+      "endpoint": "/login",
+      "method": "POST",
+      "output_encoding": "json",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/login",
+          "host": [
+            "http://127.0.0.1:8091"
+          ],
+          "encoding": "json",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/logout",
+      "method": "POST",
+      "output_encoding": "json",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/logout",
+          "host": [
+            "http://127.0.0.1:8081"
+          ],
+          "encoding": "json",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/proba",
+      "method": "GET",
+      "output_encoding": "json",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ping8084",
+          "host": [
+            "http://127.0.0.1:8084"
+          ],
+          "encoding": "json",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },{
+      "endpoint": "/following",
+      "method": "POST",
+      "output_encoding": "json",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/usersFollowings",
+          "host": [
+            "http://127.0.0.1:8089"
+          ],
+          "encoding": "json",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    }
+  ]
+}
