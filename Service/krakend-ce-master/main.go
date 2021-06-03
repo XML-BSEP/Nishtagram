@@ -46,9 +46,11 @@ func main() {
 
 
 	// routerFactory := krakendgin.DefaultFactory(proxy.DefaultFactory(logger), logger)
+	g :=gin.Default()
+	g.Use(http.CORSMiddleware())
 
 	routerFactory := krakendgin.NewFactory(krakendgin.Config{
-		Engine:       gin.Default(),
+		Engine:       g,
 		ProxyFactory: customProxyFactory{logger, proxy.DefaultFactory(logger)},
 		Logger:       logger,
 		Middlewares: mws,

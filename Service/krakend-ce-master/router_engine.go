@@ -17,8 +17,9 @@ func NewEngine(cfg config.ServiceConfig, logger logging.Logger, w io.Writer) *gi
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	engine := gin.New()
-	engine.Use(gin.LoggerWithConfig(gin.LoggerConfig{Output: w}), gin.Recovery())
+	engine := gin.Default()
+
+	engine.Use(gin.LoggerWithConfig(gin.LoggerConfig{Output: w}), gin.Recovery(), gin.Logger())
 
 	engine.RedirectTrailingSlash = true
 	engine.RedirectFixedPath = true
