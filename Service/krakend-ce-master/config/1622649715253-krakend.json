@@ -1,19 +1,31 @@
 {
   "version": 2,
+  "port": 8080,
   "extra_config": {
     "github_com/devopsfaith/krakend-cors": {
       "allow_origins": [
         "*"
       ],
-      "expose_headers": [
-        "Content-Length"
-      ],
-      "max_age": "12h",
       "allow_methods": [
         "GET",
         "HEAD",
-        "POST"
-      ]
+        "POST",
+        "OPTIONS",
+        "DELETE",
+        "PUT",
+        "PATCH"
+      ],
+      "expose_headers": [
+        "Content-Length",
+        "Content-Type"
+      ],
+      "max_age": "12h",
+      "allow_headers": [
+        "*"
+      ],
+      "allow_credentials": true,
+      "debug": false
+
     },
     "github_com/devopsfaith/krakend-gologging": {
       "level": "ERROR",
@@ -41,7 +53,7 @@
         {
           "url_pattern": "/login",
           "host": [
-            "http://127.0.0.1:8081"
+            "http://127.0.0.1:8091"
           ],
           "encoding": "json",
           "sd": "static",
@@ -84,6 +96,24 @@
           "encoding": "json",
           "sd": "static",
           "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },{
+      "endpoint": "/following",
+      "method": "POST",
+      "output_encoding": "json",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/usersFollowings",
+          "host": [
+            "http://127.0.0.1:8089"
+          ],
+          "encoding": "json",
+          "sd": "static",
+          "method": "POST",
           "extra_config": {},
           "disable_host_sanitize": false
         }
