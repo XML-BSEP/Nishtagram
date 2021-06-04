@@ -55,7 +55,7 @@ services:
     image: "redis:alpine"
     command: redis-server
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - auth-redis-data:/var/lib/redis
       - auth-redis.conf:/usr/local/etc/redis/redis.conf
@@ -63,7 +63,7 @@ services:
       - REDIS_REPLICATION_MODE=master
     networks:
       node_net:
-        ipv4_address: 172.28.1.4
+        ipv4_address: 172.28.1.5
 
   mongo:
     image: 'mongo:4.2.6-bionic'
@@ -82,6 +82,44 @@ services:
       - 'mongo'
     ports:
       - '8081:8091'
+    restart: always
+
+  mongo-user:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongo-user
+    ports:
+      - '27018:27017'
+    volumes:
+      - ./mongodata:/data/db
+    restart: always
+
+  # Mongo Express Web-based MongoDB admin interface
+  mongo_express-user:
+    image: mongo-express
+    container_name: mongo_express-user
+    depends_on:
+      - 'mongo-user'
+    ports:
+      - '8095:8091'
+    restart: always
+
+  mongo-search:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongo-search
+    ports:
+      - '27019:27017'
+    volumes:
+      - ./mongodata:/data/db
+    restart: always
+
+  # Mongo Express Web-based MongoDB admin interface
+  mongo_express-search:
+    image: mongo-express
+    container_name: mongo_express-search
+    depends_on:
+      - 'mongo-search'
+    ports:
+      - '8096:8091'
     restart: always
       
 
