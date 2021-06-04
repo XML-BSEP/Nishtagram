@@ -33,9 +33,12 @@ func main() {
 	}
 
 	logger, err := logging.NewLogger(*logLevel, os.Stdout, "[KRAKEND]")
+
 	if err != nil {
 		log.Fatal("ERROR:", err.Error())
 	}
+	g :=gin.Default()
+	g.Use(http.CORSMiddleware())
 
 	//client := resty.New()
 	mws := []gin.HandlerFunc{func(c *gin.Context){
@@ -46,8 +49,7 @@ func main() {
 
 
 	// routerFactory := krakendgin.DefaultFactory(proxy.DefaultFactory(logger), logger)
-	g :=gin.Default()
-	g.Use(http.CORSMiddleware())
+
 
 	routerFactory := krakendgin.NewFactory(krakendgin.Config{
 		Engine:       g,
@@ -65,7 +67,10 @@ func main() {
 type customProxyFactory struct {
 	logger  logging.Logger
 	factory proxy.Factory
+
 }
+
+
 
 // New implements the Factory interface
 func (cf customProxyFactory) New(cfg *config.EndpointConfig) (p proxy.Proxy, err error) {
@@ -73,5 +78,6 @@ func (cf customProxyFactory) New(cfg *config.EndpointConfig) (p proxy.Proxy, err
 	if err == nil {
 		p = proxy.NewLoggingMiddleware(cf.logger, cfg.Endpoint)(p)
 	}
+
 	return
 }

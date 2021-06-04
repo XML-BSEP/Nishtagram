@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/devopsfaith/krakend-ce/helper"
 	"github.com/devopsfaith/krakend-ce/infrastructure/dto"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
@@ -20,6 +21,7 @@ func CORSMiddleware() gin.HandlerFunc {
 			c.JSON(204, gin.H{"status":"ok"})
 			return
 		}
+		c.Header("Authorization", "sdasdsadsadsa")
 
 		c.Next()
 	}
@@ -30,9 +32,17 @@ func Middleware(ctx *gin.Context) {
 
 	if ctx.FullPath() == "/login" {
 		resp, _ := client.R().
+			SetBody(ctx.Request.Body).
 			EnableTrace().
-			Post("http://127.0.0.1:8091/login")
+			Post("https://127.0.0.1:8091/login")
 
+
+		responseBodyObj, _ := helper.DecodeBody(resp.Body())
+		if resp.StatusCode() != 200 {
+			ctx.JSON(resp.StatusCode(), gin.H{"message" : responseBodyObj.Message})
+			ctx.Abort()
+			return
+		}
 		var tokenDto dto.TokenDto
 		json.Unmarshal(resp.Body(), &tokenDto)
 		//
@@ -51,6 +61,11 @@ func Middleware(ctx *gin.Context) {
 		//tokenString := authHeader[len(BEARER_SCHEMA)+1:]
 		tokenstring1 := strings.Split(tokenString,"=")
 
+		if len(tokenstring1) != 2 {
+			ctx.JSON(400, gin.H{"message" : "Error parsing cookie"})
+			ctx.Abort()
+			return
+		}
 		token := dto.TokenDto{TokenId: tokenstring1[1]}
 		tokenByte, _ := json.Marshal(token)
 		resp, _ := client.R().
@@ -71,18 +86,17 @@ func Middleware(ctx *gin.Context) {
 
 	}
 	if ctx.FullPath() != "/login" && ctx.FullPath() != "/logout"{
-		//authHeader := c.GetHeader("Authorization")
 		tokenString := ctx.GetHeader("Cookie")
 		tokenstring1 := strings.Split(tokenString,"=")
-		//tokenString := authHeader[len(BEARER_SCHEMA)+1:]
 		token := dto.TokenDto{TokenId: tokenstring1[1]}
 		tokenByte, _ := json.Marshal(token)
 		resp, _ := client.R().
 			SetBody(tokenByte).
 			EnableTrace().
-			Post("http://127.0.0.1:8091/validateToken")
+			Post("https://127.0.0.1:8091/validateToken")
 
-
+		ctx.Request.Header.Set("Authorization", string(resp.Body()))
+		//fmt.Println(auth)
 		if resp.StatusCode() != 200 {
 			ctx.JSON(401, gin.H{"message" : "Unauthorized"})
 			ctx.Abort()
