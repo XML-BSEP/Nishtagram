@@ -86,6 +86,7 @@
       "endpoint": "/proba",
       "method": "GET",
       "output_encoding": "json",
+      "headers_to_pass" : ["*"],
       "extra_config": {},
       "backend": [
         {
