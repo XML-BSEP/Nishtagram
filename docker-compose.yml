@@ -6,6 +6,8 @@ volumes:
     cassandra-story-data: {} 
     redis-data: {}
     redis.conf: {}
+    auth-redis-data: {}
+    auth-redis.conf: {}
 
 
 networks:
@@ -44,6 +46,19 @@ services:
     volumes:
       - redis-data:/var/lib/redis
       - redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:
+      node_net:
+        ipv4_address: 172.28.1.4
+  authredis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - auth-redis-data:/var/lib/redis
+      - auth-redis.conf:/usr/local/etc/redis/redis.conf
     environment:
       - REDIS_REPLICATION_MODE=master
     networks:
