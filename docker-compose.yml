@@ -8,7 +8,9 @@ volumes:
     redis.conf: {}
     auth-redis-data: {}
     auth-redis.conf: {}
-
+    follow-data: {}
+    search-data: {}
+    user-data: {}
 
 networks:
   cassandra:  # docker network where all cassandra nodes will be put in
@@ -65,24 +67,17 @@ services:
       node_net:
         ipv4_address: 172.28.1.5
 
-  mongo:
+  mongo-follow:
     image: 'mongo:4.2.6-bionic'
-    container_name: mongo
+    container_name: mongo-follow
     ports:
       - '27017:27017'
     volumes:
-      - ./mongodata:/data/db
+      - follow-data:/data/db
     restart: always
 
   # Mongo Express Web-based MongoDB admin interface
-  mongo_express:
-    image: mongo-express
-    container_name: mongo_express
-    depends_on:
-      - 'mongo'
-    ports:
-      - '8081:8091'
-    restart: always
+  
 
   mongo-user:
     image: 'mongo:4.2.6-bionic'
@@ -90,18 +85,11 @@ services:
     ports:
       - '27018:27017'
     volumes:
-      - ./mongodata:/data/db
+      - user-data:/data/db
     restart: always
 
   # Mongo Express Web-based MongoDB admin interface
-  mongo_express-user:
-    image: mongo-express
-    container_name: mongo_express-user
-    depends_on:
-      - 'mongo-user'
-    ports:
-      - '8095:8091'
-    restart: always
+ 
 
   mongo-search:
     image: 'mongo:4.2.6-bionic'
@@ -109,18 +97,11 @@ services:
     ports:
       - '27019:27017'
     volumes:
-      - ./mongodata:/data/db
+      - search-data:/data/db
     restart: always
 
   # Mongo Express Web-based MongoDB admin interface
-  mongo_express-search:
-    image: mongo-express
-    container_name: mongo_express-search
-    depends_on:
-      - 'mongo-search'
-    ports:
-      - '8096:8091'
-    restart: always
+  
       
 
         
