@@ -47,7 +47,7 @@
     {
       "endpoint": "/login",
       "method": "POST",
-      "output_encoding": "json",
+      "output_encoding": "no-op",
       "extra_config": {},
       "backend": [
         {
@@ -55,7 +55,7 @@
           "host": [
             "http://127.0.0.1:8091"
           ],
-          "encoding": "json",
+          "encoding": "no-op",
           "sd": "static",
           "method": "POST",
           "extra_config": {},
@@ -66,13 +66,33 @@
     {
       "endpoint": "/logout",
       "method": "POST",
-      "output_encoding": "json",
+      "output_encoding": "no-op",
       "extra_config": {},
       "backend": [
         {
           "url_pattern": "/logout",
           "host": [
             "http://127.0.0.1:8081"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/addPost",
+      "method": "POST",
+      "output_encoding": "json",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/createPost",
+          "host": [
+            "http://127.0.0.1:8083"
           ],
           "encoding": "json",
           "sd": "static",
