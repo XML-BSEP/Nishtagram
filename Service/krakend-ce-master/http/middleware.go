@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/devopsfaith/krakend-ce/infrastructure/mapper"
 	"strings"
 
 	"github.com/devopsfaith/krakend-ce/helper"
@@ -40,21 +41,24 @@ func Middleware(ctx *gin.Context) {
 			EnableTrace().
 			Post("https://127.0.0.1:8091/login")
 
-		responseBodyObj, _ := helper.DecodeBody(resp.Body())
+
 		if resp.StatusCode() != 200 {
+			responseBodyObj, _ := helper.DecodeBody(resp.Body())
 			ctx.JSON(resp.StatusCode(), gin.H{"message": responseBodyObj.Message})
 			ctx.Abort()
 			return
 		}
-		var tokenDto dto.TokenDto
-		json.Unmarshal(resp.Body(), &tokenDto)
+		var authenticatedUserInfoDto dto.AuthenticatedUserInfoDto
+		json.Unmarshal(resp.Body(), &authenticatedUserInfoDto)
 		//
 		//if err != nil {
 		//	return
 		//}
-		fmt.Print(tokenDto)
 
-		ctx.SetCookie("jwt", tokenDto.TokenId, 300000, "/", "127.0.0.1:8080", false, false)
+		ctx.SetCookie("jwt", authenticatedUserInfoDto.Token, 300000, "/", "127.0.0.1:8080", false, false)
+		authenticatedUserInfoFrontDto := mapper.AuthenticatedUserInfoFrontDtoToAuthenticatedUserInfoFrontDto(authenticatedUserInfoDto)
+
+		ctx.JSON(200, authenticatedUserInfoFrontDto)
 		ctx.Abort()
 		return
 
