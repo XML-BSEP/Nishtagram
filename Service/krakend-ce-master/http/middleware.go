@@ -51,7 +51,7 @@ func Middleware(ctx *gin.Context) {
 		//}
 		fmt.Print(tokenDto)
 
-		ctx.SetCookie("jwt", tokenDto.TokenId, 5 , "/", "127.0.0.1:8080", false, false)
+		ctx.SetCookie("jwt", tokenDto.TokenId, 1000000000000 , "/", "127.0.0.1", false, false)
 		ctx.Abort()
 		return
 
@@ -88,18 +88,30 @@ func Middleware(ctx *gin.Context) {
 	if ctx.FullPath() != "/login" && ctx.FullPath() != "/logout"{
 		tokenString := ctx.GetHeader("Cookie")
 		tokenstring1 := strings.Split(tokenString,"=")
+<<<<<<< HEAD
+		//tokenString := authHeader[len(BEARER_SCHEMA)+1:]
+		ctx.Request.Header.Set("Authorization", "dsfdsfsd")
+=======
+>>>>>>> develop
 		token := dto.TokenDto{TokenId: tokenstring1[1]}
 		tokenByte, _ := json.Marshal(token)
 		resp, _ := client.R().
 			SetBody(tokenByte).
 			EnableTrace().
+<<<<<<< HEAD
+			Post("http://127.0.0.1:8091/validateToken")
+		fmt.Println(resp.Body())
+		ctx.Header("Authorization", string(resp.Body()))
+		ctx.Request.Header.Set("Authorization", string(resp.Body()))/*
+=======
 			Post("https://127.0.0.1:8091/validateToken")
 
 		ctx.Request.Header.Set("Authorization", string(resp.Body()))
 		//fmt.Println(auth)
+>>>>>>> develop
 		if resp.StatusCode() != 200 {
 			ctx.JSON(401, gin.H{"message" : "Unauthorized"})
 			ctx.Abort()
-		}
+		}*/
 	}
 }

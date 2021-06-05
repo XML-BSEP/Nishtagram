@@ -4,12 +4,38 @@ volumes:
     cassandra-data: {} 
     cassandra-post-data: {} 
     cassandra-story-data: {} 
-
+    redis-data: {}
+    redis.conf: {}
+    auth-redis-data: {}
+    auth-redis.conf: {}
+    follow-data: {}
+    search-data: {}
+    user-data: {}
+    auth-data: {}
 
 networks:
   cassandra:  # docker network where all cassandra nodes will be put in
+  node_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
   
 services:
+  auth:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: authentication
+    networks:
+      - node_net
+    volumes:
+      - auth-data:/var/lib/postgres
+
+
   cassandra_post:
     image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
     container_name: cassandra_post
@@ -29,4 +55,69 @@ services:
     volumes:
       - cassandra-story-data:/var/lib/cassandra
     
+  redis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - "6378:6379"
+    volumes:
+      - redis-data:/var/lib/redis
+      - redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:
+      node_net:
+        ipv4_address: 172.28.1.4
+  authredis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - "6380:6379"
+    volumes:
+      - auth-redis-data:/var/lib/redis
+      - auth-redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:
+      node_net:
+        ipv4_address: 172.28.1.5
+
+  mongo-follow:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongo-follow
+    ports:
+      - '27017:27017'
+    volumes:
+      - follow-data:/data/db
+    restart: always
+
+  # Mongo Express Web-based MongoDB admin interface
+  
+
+  mongo-user:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongo-user
+    ports:
+      - '27018:27017'
+    volumes:
+      - user-data:/data/db
+    restart: always
+
+  # Mongo Express Web-based MongoDB admin interface
+ 
+
+  mongo-search:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongo-search
+    ports:
+      - '27019:27017'
+    volumes:
+      - search-data:/data/db
+    restart: always
+
+  # Mongo Express Web-based MongoDB admin interface
+  
+      
+
+        
 
