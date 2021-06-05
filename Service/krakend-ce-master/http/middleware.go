@@ -3,12 +3,17 @@ package http
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/devopsfaith/krakend-ce/infrastructure/mapper"
+	"strings"
+
 	"github.com/devopsfaith/krakend-ce/helper"
 	"github.com/devopsfaith/krakend-ce/infrastructure/dto"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
-	"strings"
 )
+
+var annonymous_endpoints = []string{"/register", "/confirmAccount"}
+
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
@@ -18,7 +23,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Header("Access-Control-Allow-Methods", "POST,HEAD,PATCH, OPTIONS, GET, PUT")
 
 		if c.Request.Method == "OPTIONS" {
-			c.JSON(204, gin.H{"status":"ok"})
+			c.JSON(204, gin.H{"status": "ok"})
 			return
 		}
 		c.Header("Authorization", "sdasdsadsadsa")
@@ -37,21 +42,23 @@ func Middleware(ctx *gin.Context) {
 			Post("https://127.0.0.1:8091/login")
 
 
-		responseBodyObj, _ := helper.DecodeBody(resp.Body())
 		if resp.StatusCode() != 200 {
-			ctx.JSON(resp.StatusCode(), gin.H{"message" : responseBodyObj.Message})
+			responseBodyObj, _ := helper.DecodeBody(resp.Body())
+			ctx.JSON(resp.StatusCode(), gin.H{"message": responseBodyObj.Message})
 			ctx.Abort()
 			return
 		}
-		var tokenDto dto.TokenDto
-		json.Unmarshal(resp.Body(), &tokenDto)
+		var authenticatedUserInfoDto dto.AuthenticatedUserInfoDto
+		json.Unmarshal(resp.Body(), &authenticatedUserInfoDto)
 		//
 		//if err != nil {
 		//	return
 		//}
-		fmt.Print(tokenDto)
 
-		ctx.SetCookie("jwt", tokenDto.TokenId, 1000000000000 , "/", "127.0.0.1", false, false)
+		ctx.SetCookie("jwt", authenticatedUserInfoDto.Token, 300000, "/", "127.0.0.1:8080", false, false)
+		authenticatedUserInfoFrontDto := mapper.AuthenticatedUserInfoFrontDtoToAuthenticatedUserInfoFrontDto(authenticatedUserInfoDto)
+
+		ctx.JSON(200, authenticatedUserInfoFrontDto)
 		ctx.Abort()
 		return
 
@@ -59,10 +66,10 @@ func Middleware(ctx *gin.Context) {
 	if ctx.FullPath() == "/logout" {
 		tokenString := ctx.GetHeader("Cookie")
 		//tokenString := authHeader[len(BEARER_SCHEMA)+1:]
-		tokenstring1 := strings.Split(tokenString,"=")
+		tokenstring1 := strings.Split(tokenString, "=")
 
 		if len(tokenstring1) != 2 {
-			ctx.JSON(400, gin.H{"message" : "Error parsing cookie"})
+			ctx.JSON(400, gin.H{"message": "Error parsing cookie"})
 			ctx.Abort()
 			return
 		}
@@ -85,33 +92,27 @@ func Middleware(ctx *gin.Context) {
 		return
 
 	}
-	if ctx.FullPath() != "/login" && ctx.FullPath() != "/logout"{
+	if !helper.ContainsElement(annonymous_endpoints, ctx.FullPath()) {
 		tokenString := ctx.GetHeader("Cookie")
-		tokenstring1 := strings.Split(tokenString,"=")
-<<<<<<< HEAD
+		tokenstring1 := strings.Split(tokenString, "=")
 		//tokenString := authHeader[len(BEARER_SCHEMA)+1:]
 		ctx.Request.Header.Set("Authorization", "dsfdsfsd")
-=======
->>>>>>> develop
 		token := dto.TokenDto{TokenId: tokenstring1[1]}
 		tokenByte, _ := json.Marshal(token)
 		resp, _ := client.R().
 			SetBody(tokenByte).
 			EnableTrace().
-<<<<<<< HEAD
 			Post("http://127.0.0.1:8091/validateToken")
 		fmt.Println(resp.Body())
 		ctx.Header("Authorization", string(resp.Body()))
-		ctx.Request.Header.Set("Authorization", string(resp.Body()))/*
-=======
-			Post("https://127.0.0.1:8091/validateToken")
+		ctx.Request.Header.Set("Authorization", string(resp.Body())) /*
+				Post("https://127.0.0.1:8091/validateToken")
 
-		ctx.Request.Header.Set("Authorization", string(resp.Body()))
-		//fmt.Println(auth)
->>>>>>> develop
-		if resp.StatusCode() != 200 {
-			ctx.JSON(401, gin.H{"message" : "Unauthorized"})
-			ctx.Abort()
-		}*/
+			ctx.Request.Header.Set("Authorization", string(resp.Body()))
+			//fmt.Println(auth)
+			if resp.StatusCode() != 200 {
+				ctx.JSON(401, gin.H{"message" : "Unauthorized"})
+				ctx.Abort()
+			}*/
 	}
 }

@@ -24,8 +24,10 @@ networks:
 services:
   auth:
     image: postgres:latest
-    container_name: postgres
+    container_name: auth
     restart: always
+    ports: 
+      - 5433:5432
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "root"
@@ -33,7 +35,7 @@ services:
     networks:
       - node_net
     volumes:
-      - auth-data:/var/lib/postgres
+      - auth-data:/var/lib/auth
 
 
   cassandra_post:
