@@ -37,7 +37,7 @@
   },
   "timeout": "3000ms",
   "cache_ttl": "300s",
-  "output_encoding": "json",
+  "output_encoding": "no-op",
   "name": "Duke strategic",
   "tls": {
     "public_key": "certificate/cert.pem",
@@ -85,7 +85,7 @@
     {
       "endpoint": "/addPost",
       "method": "POST",
-      "output_encoding": "json",
+      "output_encoding": "no-op",
       "extra_config": {},
       "headers_to_pass" : ["*"],
       "backend": [
@@ -94,7 +94,7 @@
           "host": [
             "http://127.0.0.1:8083"
           ],
-          "encoding": "json",
+          "encoding": "no-op",
           "sd": "static",
           "method": "POST",
           "extra_config": {},
@@ -105,7 +105,7 @@
     {
       "endpoint": "/proba",
       "method": "GET",
-      "output_encoding": "json",
+      "output_encoding": "no-op",
       "headers_to_pass" : ["*"],
       "extra_config": {},
       "backend": [
@@ -114,7 +114,7 @@
           "host": [
             "http://127.0.0.1:8084"
           ],
-          "encoding": "json",
+          "encoding": "no-op",
           "sd": "static",
           "method": "GET",
           "extra_config": {},
@@ -124,7 +124,7 @@
     },{
       "endpoint": "/following",
       "method": "POST",
-      "output_encoding": "json",
+      "output_encoding": "no-op",
       "extra_config": {},
       "backend": [
         {
@@ -132,7 +132,7 @@
           "host": [
             "http://127.0.0.1:8089"
           ],
-          "encoding": "json",
+          "encoding": "no-op",
           "sd": "static",
           "method": "POST",
           "extra_config": {},
@@ -143,7 +143,7 @@
     {
       "endpoint": "/register",
       "method": "POST",
-      "output_encoding": "json",
+      "output_encoding": "no-op",
       "extra_config": {},
       "backend": [
         {
@@ -151,7 +151,7 @@
           "host": [
             "https://127.0.0.1:8091"
           ],
-          "encoding": "json",
+          "encoding": "no-op",
           "sd": "static",
           "method": "POST",
           "extra_config": {},
@@ -162,7 +162,7 @@
     {
       "endpoint": "/confirmAccount",
       "method": "POST",
-      "output_encoding": "json",
+      "output_encoding": "no-op",
       "extra_config": {},
       "backend": [
         {
@@ -170,7 +170,7 @@
           "host": [
             "https://127.0.0.1:8091"
           ],
-          "encoding": "json",
+          "encoding": "no-op",
           "sd": "static",
           "method": "POST",
           "extra_config": {},
