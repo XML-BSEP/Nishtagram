@@ -53,7 +53,7 @@
         {
           "url_pattern": "/login",
           "host": [
-            "http://127.0.0.1:8091"
+            "https://127.0.0.1:8091"
           ],
           "encoding": "json",
           "sd": "static",
@@ -72,7 +72,7 @@
         {
           "url_pattern": "/logout",
           "host": [
-            "http://127.0.0.1:8081"
+            "https://127.0.0.1:8091"
           ],
           "encoding": "json",
           "sd": "static",
@@ -111,6 +111,44 @@
           "url_pattern": "/usersFollowings",
           "host": [
             "http://127.0.0.1:8089"
+          ],
+          "encoding": "json",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/register",
+      "method": "POST",
+      "output_encoding": "json",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/register",
+          "host": [
+            "https://127.0.0.1:8091"
+          ],
+          "encoding": "json",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/confirmAccount",
+      "method": "POST",
+      "output_encoding": "json",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/confirmAccount",
+          "host": [
+            "https://127.0.0.1:8091"
           ],
           "encoding": "json",
           "sd": "static",

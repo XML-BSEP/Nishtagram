@@ -9,6 +9,9 @@ import (
 	"github.com/go-resty/resty/v2"
 	"strings"
 )
+
+var annonymous_endpoints = []string{"/register", "/confirmAccount"}
+
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
@@ -51,7 +54,7 @@ func Middleware(ctx *gin.Context) {
 		//}
 		fmt.Print(tokenDto)
 
-		ctx.SetCookie("jwt", tokenDto.TokenId, 5 , "/", "127.0.0.1:8080", false, false)
+		ctx.SetCookie("jwt", tokenDto.TokenId, 300000 , "/", "127.0.0.1:8080", false, false)
 		ctx.Abort()
 		return
 
@@ -85,7 +88,7 @@ func Middleware(ctx *gin.Context) {
 		return
 
 	}
-	if ctx.FullPath() != "/login" && ctx.FullPath() != "/logout"{
+	if !helper.ContainsElement(annonymous_endpoints, ctx.FullPath()){
 		tokenString := ctx.GetHeader("Cookie")
 		tokenstring1 := strings.Split(tokenString,"=")
 		token := dto.TokenDto{TokenId: tokenstring1[1]}
