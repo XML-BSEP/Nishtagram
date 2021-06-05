@@ -177,6 +177,25 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/getUserById",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/getById",
+          "host": [
+            "https://127.0.0.1:8082"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
   ]
 }
