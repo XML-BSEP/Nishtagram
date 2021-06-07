@@ -177,6 +177,49 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/getAll",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/getAll",
+          "host": [
+            "https://127.0.0.1:8082"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getUserProfileById",
+      "querystring_params": [
+        "userId"
+
+      ],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/getUserProfileById",
+          "host": [
+            "https://127.0.0.1:8082"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
+
   ]
 }
