@@ -94,7 +94,7 @@ func Middleware(ctx *gin.Context) {
 	}
 	if !helper.ContainsElement(annonymous_endpoints, ctx.FullPath()) {
 		tokenString := ctx.GetHeader("Cookie")
-		tokenstring1 := strings.Split(tokenString, "=")
+		tokenstring1 := strings.Split(tokenString, "jwt=")
 		//tokenString := authHeader[len(BEARER_SCHEMA)+1:]
 		ctx.Request.Header.Set("Authorization", "dsfdsfsd")
 		token := dto.TokenDto{TokenId: tokenstring1[1]}
@@ -102,17 +102,13 @@ func Middleware(ctx *gin.Context) {
 		resp, _ := client.R().
 			SetBody(tokenByte).
 			EnableTrace().
-			Post("http://127.0.0.1:8091/validateToken")
+			Post("https://127.0.0.1:8091/validateToken")
 		fmt.Println(resp.Body())
-		ctx.Header("Authorization", string(resp.Body()))
-		ctx.Request.Header.Set("Authorization", string(resp.Body())) /*
-				Post("https://127.0.0.1:8091/validateToken")
 
-			ctx.Request.Header.Set("Authorization", string(resp.Body()))
-			//fmt.Println(auth)
+		ctx.Request.Header.Set("Authorization", string(resp.Body()))
 			if resp.StatusCode() != 200 {
 				ctx.JSON(401, gin.H{"message" : "Unauthorized"})
 				ctx.Abort()
-			}*/
+			}
 	}
 }

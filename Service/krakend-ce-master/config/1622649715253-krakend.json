@@ -404,7 +404,7 @@
     },
     {
       "endpoint": "/feed",
-      "method": "POST",
+      "method": "GET",
       "output_encoding": "no-op",
       "extra_config": {},
       "headers_to_pass" : ["*"],
@@ -412,11 +412,11 @@
         {
           "url_pattern": "/post/feed",
           "host": [
-            "http://127.0.0.1:8083"
+            "https://127.0.0.1:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
-          "method": "POST",
+          "method": "GET",
           "extra_config": {},
           "disable_host_sanitize": false
         }
