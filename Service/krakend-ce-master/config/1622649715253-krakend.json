@@ -103,6 +103,86 @@
       ]
     },
     {
+      "endpoint": "/getAllCollections",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getAllCollections",
+          "host": [
+            "https://127.0.0.1:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getFavorites",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getFavorites",
+          "host": [
+            "https://127.0.0.1:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getPostsInCollection",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getPostsInCollection",
+          "host": [
+            "https://127.0.0.1:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/addToCollection",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/addToCollection",
+          "host": [
+            "https://127.0.0.1:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
       "endpoint": "/createCollection",
       "method": "POST",
       "output_encoding": "no-op",
@@ -323,16 +403,16 @@
       ]
     },
     {
-      "endpoint": "/removeComment",
+      "endpoint": "/getAllStoriesOnUserProfile",
       "method": "POST",
       "output_encoding": "no-op",
       "extra_config": {},
       "headers_to_pass" : ["*"],
       "backend": [
         {
-          "url_pattern": "/post/removeComment",
+          "url_pattern": "/story/getAllStoriesOnUserProfile",
           "host": [
-            "http://127.0.0.1:8083"
+            "https://127.0.0.1:8084"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -343,16 +423,116 @@
       ]
     },
     {
-      "endpoint": "/addToCollection",
+      "endpoint": "/getHighlights",
       "method": "POST",
       "output_encoding": "no-op",
       "extra_config": {},
       "headers_to_pass" : ["*"],
       "backend": [
         {
-          "url_pattern": "/post/addToCollection",
+          "url_pattern": "/story/getHighlights",
           "host": [
-            "http://127.0.0.1:8083"
+            "https://127.0.0.1:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/addToHighlight",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/addToHighlight",
+          "host": [
+            "https://127.0.0.1:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/removeFromHighlight",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/removeFromHighlight",
+          "host": [
+            "https://127.0.0.1:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getStoriesHighlight",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/getStoriesHighlight",
+          "host": [
+            "https://127.0.0.1:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/saveHighlight",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/saveHighlight",
+          "host": [
+            "https://127.0.0.1:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/removeComment",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/removeComment",
+          "host": [
+            "https://127.0.0.1:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -372,7 +552,7 @@
         {
           "url_pattern": "/post/removeFromCollection",
           "host": [
-            "http://127.0.0.1:8083"
+            "https://127.0.0.1:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -392,7 +572,7 @@
         {
           "url_pattern": "/post/addFavorite",
           "host": [
-            "http://127.0.0.1:8083"
+            "https://127.0.0.1:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -412,7 +592,7 @@
         {
           "url_pattern": "/post/removeFavorite",
           "host": [
-            "http://127.0.0.1:8083"
+            "https://127.0.0.1:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -483,6 +663,27 @@
       ]
     },
     {
+      "endpoint": "/getUserById",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "querystring_params": ["userId"],
+      "backend": [
+        {
+          "url_pattern": "/getUserById",
+          "host": [
+            "https://127.0.0.1:8082"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
       "endpoint": "/deletePost",
       "method": "POST",
       "output_encoding": "no-op",
@@ -493,6 +694,66 @@
           "url_pattern": "/post/deletePost",
           "host": [
             "http://127.0.0.1:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/isAllowedToFollow",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/isAllowedToFollow",
+          "host": [
+            "http://127.0.0.1:8089"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getAllUsersFollowingFront",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/getAllUsersFollowingFront",
+          "host": [
+            "http://127.0.0.1:8089"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getAllUsersFollowersFront",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/getAllUsersFollowersFront",
+          "host": [
+            "http://127.0.0.1:8089"
           ],
           "encoding": "no-op",
           "sd": "static",
