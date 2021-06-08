@@ -83,6 +83,66 @@
       ]
     },
     {
+      "endpoint": "/isAllowedToFollow",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/isAllowedToFollow",
+          "host": [
+            "http://127.0.0.1:8089"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/cancelFollowRequest",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/cancelFollowRequest",
+          "host": [
+            "http://127.0.0.1:8089"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getUserById",
+      "querystring_params": [
+      "userId"
+      ],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/getUserById",
+          "host": [
+            "https://127.0.0.1:8082"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
       "endpoint": "/addPost",
       "method": "POST",
       "output_encoding": "no-op",
