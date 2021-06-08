@@ -3,70 +3,15 @@ module github.com/devopsfaith/krakend-ce
 go 1.12
 
 require (
-	github.com/PuerkitoBio/goquery v1.4.0 // indirect
-	github.com/andybalholm/cascadia v1.0.0 // indirect
-	github.com/catalinc/hashcash v0.0.0-20161205220751-e6bc29ff4de9 // indirect
-	github.com/clbanning/mxj v1.8.4 // indirect
-	github.com/codegangsta/negroni v1.0.0 // indirect
-	github.com/devopsfaith/bloomfilter v0.0.0-20190317200532-4687d0b9aa2a
 	github.com/devopsfaith/krakend v1.2.1-0.20210212160439-f312fca7be1e
-	github.com/devopsfaith/krakend-amqp v1.1.1-0.20200703170727-f0e7ebe619af
-	github.com/devopsfaith/krakend-botdetector v0.0.0-20200729112051-82f1b8f8fdfe
-	github.com/devopsfaith/krakend-cel v0.0.0-20210127195753-2e4f1c7580e4
-	github.com/devopsfaith/krakend-circuitbreaker v0.0.0-20200703180246-3ea7a4c22c3b
-	github.com/devopsfaith/krakend-cobra v0.0.0-20200317174411-3518505e8cd2
-	github.com/devopsfaith/krakend-consul v0.0.0-20210209180917-00d2bff69730
-	github.com/devopsfaith/krakend-cors v0.0.0-20210126212640-09bb3851d085
-	github.com/devopsfaith/krakend-flexibleconfig v0.0.0-20210222183249-754d3c696149
-	github.com/devopsfaith/krakend-gelf v0.0.0-20181019222239-59c0250b1c60
-	github.com/devopsfaith/krakend-gologging v0.0.0-20190131142345-f3f256584ecc
-	github.com/devopsfaith/krakend-httpcache v0.0.0-20181030153148-8474476ff874
-	github.com/devopsfaith/krakend-httpsecure v0.0.0-20191009151918-298638962e76
-	github.com/devopsfaith/krakend-jose v1.1.1-0.20210219175810-9b453c61a92e
-	github.com/devopsfaith/krakend-jsonschema v0.0.0-20200611142303-11a34c8149c3
-	github.com/devopsfaith/krakend-lambda v0.0.0-20201005114349-3d7d5730c1fa
-	github.com/devopsfaith/krakend-logstash v0.0.0-20190131142205-17f4745d3502
-	github.com/devopsfaith/krakend-lua v1.1.2-0.20210209235241-e842cd2d676e
-	github.com/devopsfaith/krakend-martian v0.0.0-20191207191841-92e3287c36d9
-	github.com/devopsfaith/krakend-metrics v1.1.0
-	github.com/devopsfaith/krakend-oauth2-clientcredentials v1.1.0
-	github.com/devopsfaith/krakend-opencensus v1.1.1-0.20201119132304-815fbc5addba
-	github.com/devopsfaith/krakend-pubsub v0.0.0-20200728135630-1781054836a5
-	github.com/devopsfaith/krakend-ratelimit v1.1.1-0.20210208161207-53a76133553a
-	github.com/devopsfaith/krakend-rss v0.0.0-20200914123253-f81cced96000
-	github.com/devopsfaith/krakend-usage v0.0.0-20181025134340-476779c0a36c
-	github.com/devopsfaith/krakend-viper v0.0.0-20200605164302-854fa4ff4a66
-	github.com/devopsfaith/krakend-xml v0.0.0-20200824111110-baa61b333b05
 	github.com/gin-gonic/gin v1.6.3
-	github.com/go-contrib/uuid v1.2.0
+	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/go-resty/resty/v2 v2.6.0
-	github.com/go-test/deep v1.0.7 // indirect
-	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79 // indirect
-	github.com/hashicorp/consul/api v1.4.0 // indirect
-	github.com/hashicorp/vault/api v1.0.5-0.20201001211907-38d91b749c77 // indirect
-	github.com/hashicorp/vault/sdk v0.1.14-0.20201109203410-5e6e24692b32 // indirect
-	github.com/influxdata/influxdb v1.7.4 // indirect
-	github.com/influxdata/platform v0.0.0-20190117200541-d500d3cf5589 // indirect
-	github.com/kpacha/opencensus-influxdb v0.0.0-20181102202715-663e2683a27c // indirect
-	github.com/letgoapp/krakend-consul v0.0.0-20190130102841-7623a4da32a1 // indirect
-	github.com/letgoapp/krakend-influx v0.0.0-20190214142340-d2fc9466bb3a
-	github.com/mmcdole/gofeed v1.0.0-beta2 // indirect
-	github.com/mmcdole/goxpp v0.0.0-20170720115402-77e4a51a73ed // indirect
-	github.com/pelletier/go-toml v1.7.0 // indirect
-	github.com/prometheus/common v0.11.1 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/spf13/viper v1.4.0 // indirect
-	github.com/tmthrgd/atomics v0.0.0-20180217065130-6910de195248 // indirect
-	github.com/tmthrgd/go-bitset v0.0.0-20180106085139-4d1be735fbfb // indirect
-	github.com/tmthrgd/go-bitwise v0.0.0-20170218093117-01bef038b6bd // indirect
-	github.com/tmthrgd/go-byte-test v0.0.0-20170223110042-2eb5216b83f7 // indirect
-	github.com/tmthrgd/go-hex v0.0.0-20180828131331-d1fb3dbb16a1 // indirect
-	github.com/tmthrgd/go-memset v0.0.0-20180828131805-6f4e59bf1e1d // indirect
-	github.com/tmthrgd/go-popcount v0.0.0-20180111143836-3918361d3e97 // indirect
-	github.com/unrolled/secure v0.0.0-20171102162350-0f73fc7feba6 // indirect
-	gocloud.dev/pubsub/kafkapubsub v0.21.0 // indirect
-	gocloud.dev/pubsub/natspubsub v0.21.0 // indirect
-	gocloud.dev/pubsub/rabbitpubsub v0.21.0 // indirect
-	gocloud.dev/secrets/hashivault v0.21.0 // indirect
-	gopkg.in/Graylog2/go-gelf.v2 v2.0.0-20180326133423-4dbb9d721348 // indirect
+	github.com/golang/protobuf v1.4.2 // indirect
+	github.com/google/go-cmp v0.4.1 // indirect
+	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/stretchr/testify v1.5.1 // indirect
+	google.golang.org/protobuf v1.24.0 // indirect
+	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 )

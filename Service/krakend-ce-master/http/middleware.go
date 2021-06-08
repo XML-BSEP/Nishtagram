@@ -78,7 +78,7 @@ func Middleware(ctx *gin.Context) {
 		resp, _ := client.R().
 			SetBody(tokenByte).
 			EnableTrace().
-			Post("http://127.0.0.1:8091/logout")
+			Post("https://127.0.0.1:8091/logout")
 
 		var response dto.ServiceResponseDto
 		err := json.Unmarshal(resp.Body(), &response)
@@ -97,18 +97,32 @@ func Middleware(ctx *gin.Context) {
 		tokenstring1 := strings.Split(tokenString, "jwt=")
 		//tokenString := authHeader[len(BEARER_SCHEMA)+1:]
 		ctx.Request.Header.Set("Authorization", "dsfdsfsd")
-		token := dto.TokenDto{TokenId: tokenstring1[1]}
-		tokenByte, _ := json.Marshal(token)
-		resp, _ := client.R().
-			SetBody(tokenByte).
-			EnableTrace().
-			Post("https://127.0.0.1:8091/validateToken")
-		fmt.Println(resp.Body())
-
-		ctx.Request.Header.Set("Authorization", string(resp.Body()))
+		if len(tokenstring1) > 1 {
+			token := dto.TokenDto{TokenId: tokenstring1[1]}
+			tokenByte, _ := json.Marshal(token)
+			resp, _ := client.R().
+				SetBody(tokenByte).
+				EnableTrace().
+				Post("https://127.0.0.1:8091/validateToken")
+			ctx.Request.Header.Set("Authorization", string(resp.Body()))
 			if resp.StatusCode() != 200 {
 				ctx.JSON(401, gin.H{"message" : "Unauthorized"})
 				ctx.Abort()
 			}
+		} else {
+			token := dto.TokenDto{TokenId: ""}
+			tokenByte, _ := json.Marshal(token)
+			resp, _ := client.R().
+				SetBody(tokenByte).
+				EnableTrace().
+				Post("https://127.0.0.1:8091/validateToken")
+			ctx.Request.Header.Set("Authorization", string(resp.Body()))
+			if resp.StatusCode() != 200 {
+				ctx.JSON(401, gin.H{"message" : "Unauthorized"})
+				ctx.Abort()
+			}
+		}
+
+
 	}
 }
