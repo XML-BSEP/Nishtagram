@@ -1,23 +1,57 @@
-FROM debian:buster-slim
+# FROM golang:alpine
 
-LABEL maintainer="dortiz@devops.faith"
+# # Install git
+# RUN apk update && apk add --no-cache git
 
-RUN apt-get update && \
-	apt-get install -y ca-certificates && \
-	update-ca-certificates && \
-	rm -rf /var/lib/apt/lists/*
+# # Where our files will be in the docker container 
 
-ADD krakend /usr/bin/krakend
+# # Copy the source from the current directory to the working Directory inside the container 
+# # Source also contains go.mod and go.sum which are dependency files
+# WORKDIR /src
 
-RUN useradd -r -c "KrakenD user" -U krakend
+# # Get Dependency
+# # COPY go.* .
+# # RUN go mod download
 
-USER krakend
 
-VOLUME [ "/etc/krakend" ]
+# COPY . .
 
-WORKDIR /etc/krakend
+# RUN go build -o main .
 
-ENTRYPOINT [ "/usr/bin/krakend" ]
-CMD [ "run", "-c", "/etc/krakend/krakend.json" ]
+# # Install Air for hot reload
+# RUN go get -u github.com/cosmtrek/air
 
-EXPOSE 8000 8090
+# # The ENTRYPOINT defines the command that will be ran when the container starts up
+# # In this case air command for hot reload go apps on file changes
+# ENTRYPOINT air
+
+FROM golang:latest as builder
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+
+# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
+RUN go mod download
+
+# Copy everything from the current directory to the Working Directory inside the container
+COPY . .
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+
+######## Start a new stage from scratch #######
+FROM alpine:latest  
+
+WORKDIR /root/
+
+# Copy the Pre-built binary file from the previous stage
+COPY --from=builder /app/config ./config
+COPY --from=builder /app/certificate ./certificate
+COPY --from=builder /app/main .
+
+# Command to run the executable
+CMD ["./main"]
