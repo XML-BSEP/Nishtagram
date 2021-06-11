@@ -123,7 +123,7 @@
     {
       "endpoint": "/getUserById",
       "querystring_params": [
-      "userId"
+        "userId"
       ],
       "method": "GET",
       "output_encoding": "no-op",
@@ -152,7 +152,7 @@
         {
           "url_pattern": "/post/createPost",
           "host": [
-            "https://127.0.0.1:8083"
+            "http://127.0.0.1:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -161,8 +161,7 @@
           "disable_host_sanitize": false
         }
       ]
-    },
-    {
+    },{
       "endpoint": "/getAllCollections",
       "method": "GET",
       "output_encoding": "no-op",
@@ -941,6 +940,87 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/isTotpEnabled",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/isTotpEnabled",
+          "host": [
+            "https://127.0.0.1:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/disableTotp",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/disableTotp",
+          "host": [
+            "https://127.0.0.1:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/verifySecret",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/verifySecret",
+          "host": [
+            "https://127.0.0.1:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/generateSecret",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/generateSecret",
+          "host": [
+            "https://127.0.0.1:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
+
   ]
 }
