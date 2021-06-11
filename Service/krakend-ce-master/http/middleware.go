@@ -12,7 +12,7 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode"}
+var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword"}
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
