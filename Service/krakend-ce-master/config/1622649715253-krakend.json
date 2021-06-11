@@ -1040,6 +1040,46 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/resetPasswordMail",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/resetPasswordMail",
+          "host": [
+            "https://127.0.0.1:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/resetPassword",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/resetPassword",
+          "host": [
+            "https://127.0.0.1:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
   ]
 }
