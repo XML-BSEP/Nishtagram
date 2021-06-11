@@ -1020,7 +1020,26 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/resendRegistrationCode",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/resendRegistrationCode",
+          "host": [
+            "https://127.0.0.1:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
-
   ]
 }
