@@ -723,27 +723,6 @@
       ]
     },
     {
-      "endpoint": "/getUserById",
-      "method": "GET",
-      "output_encoding": "no-op",
-      "extra_config": {},
-      "headers_to_pass" : ["*"],
-      "querystring_params": ["userId"],
-      "backend": [
-        {
-          "url_pattern": "/getUserById",
-          "host": [
-            "https://127.0.0.1:8082"
-          ],
-          "encoding": "no-op",
-          "sd": "static",
-          "method": "GET",
-          "extra_config": {},
-          "disable_host_sanitize": false
-        }
-      ]
-    },
-    {
       "endpoint": "/deletePost",
       "method": "POST",
       "output_encoding": "no-op",
@@ -754,26 +733,6 @@
           "url_pattern": "/post/deletePost",
           "host": [
             "http://127.0.0.1:8083"
-          ],
-          "encoding": "no-op",
-          "sd": "static",
-          "method": "POST",
-          "extra_config": {},
-          "disable_host_sanitize": false
-        }
-      ]
-    },
-    {
-      "endpoint": "/isAllowedToFollow",
-      "method": "POST",
-      "output_encoding": "no-op",
-      "extra_config": {},
-      "headers_to_pass" : ["*"],
-      "backend": [
-        {
-          "url_pattern": "/isAllowedToFollow",
-          "host": [
-            "http://127.0.0.1:8089"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -960,7 +919,28 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/searchUser",
+      "querystring_params": [
+        "search"
+      ],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/searchUser",
+          "host": [
+            "https://127.0.0.1:8082"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
-
   ]
 }
