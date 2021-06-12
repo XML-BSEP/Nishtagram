@@ -56,7 +56,7 @@ func Middleware(ctx *gin.Context) {
 		//	return
 		//}
 
-		ctx.SetCookie("jwt", authenticatedUserInfoDto.Token, 300000, "/", "127.0.0.1:8080", false, false)
+		ctx.SetCookie("jwt", authenticatedUserInfoDto.Token, 604800000, "/", "127.0.0.1:8080", false, false)
 		authenticatedUserInfoFrontDto := mapper.AuthenticatedUserInfoFrontDtoToAuthenticatedUserInfoFrontDto(authenticatedUserInfoDto)
 
 		ctx.JSON(200, authenticatedUserInfoFrontDto)
@@ -126,7 +126,7 @@ func Middleware(ctx *gin.Context) {
 			var authenticatedUserInfoDto dto.AuthenticatedUserInfoDto
 			json.Unmarshal(resp2.Body(), &authenticatedUserInfoDto)
 
-			ctx.SetCookie("jwt", authenticatedUserInfoDto.Token, 300000, "/", "127.0.0.1:8080", false, false)
+			ctx.SetCookie("jwt", authenticatedUserInfoDto.Token, 604800000, "/", "127.0.0.1:8080", false, false)
 			authenticatedUserInfoFrontDto := mapper.AuthenticatedUserInfoFrontDtoToAuthenticatedUserInfoFrontDto(authenticatedUserInfoDto)
 
 			ctx.JSON(200, authenticatedUserInfoFrontDto)
@@ -140,6 +140,7 @@ func Middleware(ctx *gin.Context) {
 				SetBody(tokenByte).
 				EnableTrace().
 				Post("https://127.0.0.1:8091/validateTemporaryToken")
+
 			ctx.Request.Header.Set("Authorization", string(resp.Body()))
 			if resp.StatusCode() != 200 {
 				ctx.JSON(401, gin.H{"message": "Unauthorized"})
@@ -158,12 +159,30 @@ func Middleware(ctx *gin.Context) {
 				SetBody(tokenByte).
 				EnableTrace().
 				Post("https://127.0.0.1:8091/validateToken")
+
 			ctx.Request.Header.Set("Authorization", string(resp.Body()))
 			if resp.StatusCode() != 200 {
+				resp, _ := client.R().
+					SetBody(tokenByte).
+					EnableTrace().
+					Post("https://127.0.0.1:8091/refreshToken")
+
+				if resp.StatusCode() != 200 {
+					ctx.JSON(401, gin.H{"message": "Unauthorized"})
+					ctx.Abort()
+					return
+				}
+				var refreshTokenDto dto.RefreshTokenDto
+				json.Unmarshal(resp.Body(), &refreshTokenDto)
+				ctx.Request.Header.Set("Authorization", string(resp.Body()))
+
+				ctx.SetCookie("jwt", refreshTokenDto.TokenUuid, 604800000, "/", "127.0.0.1:8080", false, false)
+
 				ctx.JSON(401, gin.H{"message": "Unauthorized"})
-				ctx.Abort()
-				return
+				ctx.Request.Header.Set("Authorization", refreshTokenDto.Token)
+
 			}
+
 		} else {
 			token := dto.TokenDto{TokenId: ""}
 			tokenByte, _ := json.Marshal(token)
