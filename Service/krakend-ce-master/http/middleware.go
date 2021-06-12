@@ -177,8 +177,6 @@ func Middleware(ctx *gin.Context) {
 				ctx.Request.Header.Set("Authorization", string(resp.Body()))
 
 				ctx.SetCookie("jwt", refreshTokenDto.TokenUuid, 604800000, "/", "127.0.0.1:8080", false, false)
-
-				ctx.JSON(401, gin.H{"message": "Unauthorized"})
 				ctx.Request.Header.Set("Authorization", refreshTokenDto.Token)
 
 			}
