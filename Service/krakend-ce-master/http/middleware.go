@@ -12,7 +12,7 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow"}
+var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/validateTotp"}
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -36,6 +36,7 @@ func Middleware(ctx *gin.Context) {
 	client := resty.New()
 
 	if ctx.FullPath() == "/login" {
+
 		resp, _ := client.R().
 			SetBody(ctx.Request.Body).
 			EnableTrace().
@@ -92,11 +93,66 @@ func Middleware(ctx *gin.Context) {
 		return
 
 	}
+
+	if ctx.FullPath() == "/validateTotp" {
+		tokenString := ctx.GetHeader("Cookie")
+		tokenstring1 := strings.Split(tokenString, "jwt=")
+		if len(tokenstring1) > 1 {
+			token := dto.TokenDto{TokenId: tokenstring1[1]}
+			tokenByte, _ := json.Marshal(token)
+			resp, _ := client.R().
+				SetBody(tokenByte).
+				EnableTrace().
+				Post("https://127.0.0.1:8091/validateTemporaryToken")
+			//token1 := string(resp.Body())
+			//ctx.Request.Header.Set("Authorization", token1)
+			if resp.StatusCode() != 200 {
+				ctx.JSON(401, gin.H{"message" : "Unauthorized"})
+				ctx.Abort()
+				return
+			}
+			resp2, _ := client.R().
+				SetBody(ctx.Request.Body).
+				EnableTrace().
+				SetHeader("Authorization", string(resp.Body())).
+				Post("https://127.0.0.1:8091/validateTotp")
+
+
+			if resp2.StatusCode() != 200 {
+				responseBodyObj, _ := helper.DecodeBody(resp2.Body())
+				ctx.JSON(resp.StatusCode(), gin.H{"message": responseBodyObj.Message})
+				ctx.Abort()
+				return
+			}
+			var authenticatedUserInfoDto dto.AuthenticatedUserInfoDto
+			json.Unmarshal(resp2.Body(), &authenticatedUserInfoDto)
+
+
+			ctx.SetCookie("jwt", authenticatedUserInfoDto.Token, 300000, "/", "127.0.0.1:8080", false, false)
+			authenticatedUserInfoFrontDto := mapper.AuthenticatedUserInfoFrontDtoToAuthenticatedUserInfoFrontDto(authenticatedUserInfoDto)
+
+			ctx.JSON(200, authenticatedUserInfoFrontDto)
+			ctx.Abort()
+			return
+
+		}else {
+			token := dto.TokenDto{TokenId: ""}
+			tokenByte, _ := json.Marshal(token)
+			resp, _ := client.R().
+				SetBody(tokenByte).
+				EnableTrace().
+				Post("https://127.0.0.1:8091/validateTemporaryToken")
+			ctx.Request.Header.Set("Authorization", string(resp.Body()))
+			if resp.StatusCode() != 200 {
+				ctx.JSON(401, gin.H{"message" : "Unauthorized"})
+				ctx.Abort()
+				return
+			}
+		}
+	}
 	if !helper.ContainsElement(annonymous_endpoints, ctx.FullPath()) {
 		tokenString := ctx.GetHeader("Cookie")
 		tokenstring1 := strings.Split(tokenString, "jwt=")
-		//tokenString := authHeader[len(BEARER_SCHEMA)+1:]
-		ctx.Request.Header.Set("Authorization", "dsfdsfsd")
 		if len(tokenstring1) > 1 {
 			token := dto.TokenDto{TokenId: tokenstring1[1]}
 			tokenByte, _ := json.Marshal(token)
@@ -108,6 +164,7 @@ func Middleware(ctx *gin.Context) {
 			if resp.StatusCode() != 200 {
 				ctx.JSON(401, gin.H{"message" : "Unauthorized"})
 				ctx.Abort()
+				return
 			}
 		} else {
 			token := dto.TokenDto{TokenId: ""}
@@ -120,6 +177,7 @@ func Middleware(ctx *gin.Context) {
 			if resp.StatusCode() != 200 {
 				ctx.JSON(401, gin.H{"message" : "Unauthorized"})
 				ctx.Abort()
+				return
 			}
 		}
 
