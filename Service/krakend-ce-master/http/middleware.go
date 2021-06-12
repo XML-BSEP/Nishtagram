@@ -13,7 +13,7 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword", "/validateTotp"}
+var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword", "/validateTotp", "/isTotpEnabled"}
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -119,7 +119,7 @@ func Middleware(ctx *gin.Context) {
 
 			if resp2.StatusCode() != 200 {
 				responseBodyObj, _ := helper.DecodeBody(resp2.Body())
-				ctx.JSON(resp.StatusCode(), gin.H{"message": responseBodyObj.Message})
+				ctx.JSON(resp2.StatusCode(), gin.H{"message": responseBodyObj.Message})
 				ctx.Abort()
 				return
 			}
@@ -180,4 +180,7 @@ func Middleware(ctx *gin.Context) {
 		}
 
 	}
+
+
+
 }

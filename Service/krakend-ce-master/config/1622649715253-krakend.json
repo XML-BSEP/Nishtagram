@@ -944,7 +944,7 @@
     },
     {
       "endpoint": "/isTotpEnabled",
-      "method": "GET",
+      "method": "POST",
       "output_encoding": "no-op",
       "headers_to_pass" : ["*"],
       "extra_config": {},
@@ -956,7 +956,7 @@
           ],
           "encoding": "no-op",
           "sd": "static",
-          "method": "GET",
+          "method": "POST",
           "extra_config": {},
           "disable_host_sanitize": false
         }
@@ -1004,7 +1004,7 @@
     },
     {
       "endpoint": "/generateSecret",
-      "method": "POST",
+      "method": "GET",
       "output_encoding": "no-op",
       "headers_to_pass" : ["*"],
       "extra_config": {},
@@ -1016,7 +1016,7 @@
           ],
           "encoding": "no-op",
           "sd": "static",
-          "method": "POST",
+          "method": "GET",
           "extra_config": {},
           "disable_host_sanitize": false
         }
