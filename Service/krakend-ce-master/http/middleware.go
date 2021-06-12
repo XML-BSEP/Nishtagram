@@ -3,8 +3,9 @@ package http
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/devopsfaith/krakend-ce/infrastructure/mapper"
 	"strings"
+
+	"github.com/devopsfaith/krakend-ce/infrastructure/mapper"
 
 	"github.com/devopsfaith/krakend-ce/helper"
 	"github.com/devopsfaith/krakend-ce/infrastructure/dto"
@@ -12,7 +13,7 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/validateTotp"}
+var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword", "/validateTotp"}
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -41,7 +42,6 @@ func Middleware(ctx *gin.Context) {
 			SetBody(ctx.Request.Body).
 			EnableTrace().
 			Post("https://127.0.0.1:8091/login")
-
 
 		if resp.StatusCode() != 200 {
 			responseBodyObj, _ := helper.DecodeBody(resp.Body())
@@ -107,7 +107,7 @@ func Middleware(ctx *gin.Context) {
 			//token1 := string(resp.Body())
 			//ctx.Request.Header.Set("Authorization", token1)
 			if resp.StatusCode() != 200 {
-				ctx.JSON(401, gin.H{"message" : "Unauthorized"})
+				ctx.JSON(401, gin.H{"message": "Unauthorized"})
 				ctx.Abort()
 				return
 			}
@@ -116,7 +116,6 @@ func Middleware(ctx *gin.Context) {
 				EnableTrace().
 				SetHeader("Authorization", string(resp.Body())).
 				Post("https://127.0.0.1:8091/validateTotp")
-
 
 			if resp2.StatusCode() != 200 {
 				responseBodyObj, _ := helper.DecodeBody(resp2.Body())
@@ -127,7 +126,6 @@ func Middleware(ctx *gin.Context) {
 			var authenticatedUserInfoDto dto.AuthenticatedUserInfoDto
 			json.Unmarshal(resp2.Body(), &authenticatedUserInfoDto)
 
-
 			ctx.SetCookie("jwt", authenticatedUserInfoDto.Token, 300000, "/", "127.0.0.1:8080", false, false)
 			authenticatedUserInfoFrontDto := mapper.AuthenticatedUserInfoFrontDtoToAuthenticatedUserInfoFrontDto(authenticatedUserInfoDto)
 
@@ -135,7 +133,7 @@ func Middleware(ctx *gin.Context) {
 			ctx.Abort()
 			return
 
-		}else {
+		} else {
 			token := dto.TokenDto{TokenId: ""}
 			tokenByte, _ := json.Marshal(token)
 			resp, _ := client.R().
@@ -144,7 +142,7 @@ func Middleware(ctx *gin.Context) {
 				Post("https://127.0.0.1:8091/validateTemporaryToken")
 			ctx.Request.Header.Set("Authorization", string(resp.Body()))
 			if resp.StatusCode() != 200 {
-				ctx.JSON(401, gin.H{"message" : "Unauthorized"})
+				ctx.JSON(401, gin.H{"message": "Unauthorized"})
 				ctx.Abort()
 				return
 			}
@@ -162,7 +160,7 @@ func Middleware(ctx *gin.Context) {
 				Post("https://127.0.0.1:8091/validateToken")
 			ctx.Request.Header.Set("Authorization", string(resp.Body()))
 			if resp.StatusCode() != 200 {
-				ctx.JSON(401, gin.H{"message" : "Unauthorized"})
+				ctx.JSON(401, gin.H{"message": "Unauthorized"})
 				ctx.Abort()
 				return
 			}
@@ -175,12 +173,11 @@ func Middleware(ctx *gin.Context) {
 				Post("https://127.0.0.1:8091/validateToken")
 			ctx.Request.Header.Set("Authorization", string(resp.Body()))
 			if resp.StatusCode() != 200 {
-				ctx.JSON(401, gin.H{"message" : "Unauthorized"})
+				ctx.JSON(401, gin.H{"message": "Unauthorized"})
 				ctx.Abort()
 				return
 			}
 		}
-
 
 	}
 }
