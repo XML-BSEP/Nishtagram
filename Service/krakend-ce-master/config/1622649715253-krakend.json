@@ -91,7 +91,7 @@
         {
           "url_pattern": "/isAllowedToFollow",
           "host": [
-            "http://127.0.0.1:8089"
+            "https://127.0.0.1:8089"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -110,7 +110,7 @@
         {
           "url_pattern": "/cancelFollowRequest",
           "host": [
-            "http://127.0.0.1:8089"
+            "https://127.0.0.1:8089"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -752,7 +752,7 @@
         {
           "url_pattern": "/getAllUsersFollowingFront",
           "host": [
-            "http://127.0.0.1:8089"
+            "https://127.0.0.1:8089"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -772,7 +772,7 @@
         {
           "url_pattern": "/getAllUsersFollowersFront",
           "host": [
-            "http://127.0.0.1:8089"
+            "https://127.0.0.1:8089"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -830,7 +830,7 @@
         {
           "url_pattern": "/usersFollowings",
           "host": [
-            "http://127.0.0.1:8089"
+            "https://127.0.0.1:8089"
           ],
           "encoding": "no-op",
           "sd": "static",
