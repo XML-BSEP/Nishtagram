@@ -153,7 +153,7 @@
         {
           "url_pattern": "/post/createPost",
           "host": [
-            "http://127.0.0.1:8083"
+            "https://127.0.0.1:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
