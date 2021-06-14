@@ -50,26 +50,26 @@ services:
         - "14250:14250"
       
 
-    # cassandra_post:
-    #   image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
-    #   container_name: cassandra_post
-    #   mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
-    #   ports:
-    #     - 7000:9042
-    #   expose: 
-    #     - 7000
-    #   volumes:
-    #     - cassandra-post-data:/var/lib/cassandra
+    cassandra_post:
+      image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+      container_name: cassandra_post
+      mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+      ports:
+        - 7000:9042
+      expose: 
+        - 7000
+      volumes:
+        - cassandra-post-data:/var/lib/cassandra
 
 
-    # cassandra_story:
-    #   image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
-    #   container_name: cassandra_story
-    #   mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
-    #   ports:
-    #     - 7001:9042
-    #   volumes:
-    #     - cassandra-story-data:/var/lib/cassandra
+    cassandra_story:
+      image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+      container_name: cassandra_story
+      mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+      ports:
+        - 7001:9042
+      volumes:
+        - cassandra-story-data:/var/lib/cassandra
       
     redis:
       image: "redis:alpine"
@@ -84,6 +84,7 @@ services:
       networks:
         node_net:
           ipv4_address: 172.28.1.4
+          
     authredis:
       image: "redis:alpine"
       command: redis-server
@@ -110,23 +111,23 @@ services:
     #Mongo Express Web-based MongoDB admin interface
     
 
-    # mongo-user:
-    #   image: 'mongo:4.2.6-bionic'
-    #   container_name: mongo-user
-    #   ports:
-    #     - '27018:27017'
-    #   volumes:
-    #     - user-data:/data/db
-    #   restart: always
+    mongo-user:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongo-user
+      ports:
+        - '27018:27017'
+      volumes:
+        - user-data:/data/db
+      restart: always
 
     # Mongo Express Web-based MongoDB admin interface
   
 
-    # mongo-search:
-    #   image: 'mongo:4.2.6-bionic'
-    #   container_name: mongo-search
-    #   ports:
-    #     - '27019:27017'
-    #   volumes:
-    #     - search-data:/data/db
-    #   restart: always
+    mongo-search:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongo-search
+      ports:
+        - '27019:27017'
+      volumes:
+        - search-data:/data/db
+      restart: always
