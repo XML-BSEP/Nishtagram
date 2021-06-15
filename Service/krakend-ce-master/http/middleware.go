@@ -261,7 +261,8 @@ func Login(ctx *gin.Context, client pb.AuthenticationClient) {
 
 	http_helper.SetCookies(ctx, "at", response.AccessToken, 604800000)
 
-	ctx.JSON(200, gin.H{"at" : response.AccessToken, "rt" : response.RefreshToken})
+	userInfo := dto.AuthenticatedUserInfoFrontDto{Id: response.Id, Role: response.Role}
+	ctx.JSON(200, userInfo)
 	ctx.Abort()
 	return
 }
