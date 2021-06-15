@@ -1121,6 +1121,50 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/getPostLocationsByLocationContaining",
+      "headers_to_pass" : ["*"],
+      "querystring_params": [
+        "searchedLocation"
+      ],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/getPostLocationsByLocationContaining",
+          "host": [
+            "http://127.0.0.1:8087"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/post/getPostByIdForSearch",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/post/getPostByIdForSearch",
+          "host": [
+            "https://127.0.0.1:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
+
   ]
 }
