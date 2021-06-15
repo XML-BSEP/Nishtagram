@@ -24,6 +24,7 @@ type AuthenticationClient interface {
 	ResendEmail(ctx context.Context, in *ResendEmailRequest, opts ...grpc.CallOption) (*BooleanResponse, error)
 	GenerateSecret(ctx context.Context, in *AccessToken, opts ...grpc.CallOption) (*ScanTotp, error)
 	ValidateTemporaryToken(ctx context.Context, in *AccessToken, opts ...grpc.CallOption) (*AccessToken, error)
+	ValidateTotp(ctx context.Context, in *TotpValidation, opts ...grpc.CallOption) (*LoginResponse, error)
 }
 
 type authenticationClient struct {
@@ -88,6 +89,15 @@ func (c *authenticationClient) ValidateTemporaryToken(ctx context.Context, in *A
 	return out, nil
 }
 
+func (c *authenticationClient) ValidateTotp(ctx context.Context, in *TotpValidation, opts ...grpc.CallOption) (*LoginResponse, error) {
+	out := new(LoginResponse)
+	err := c.cc.Invoke(ctx, "/Authentication/ValidateTotp", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthenticationServer is the server API for Authentication service.
 // All implementations must embed UnimplementedAuthenticationServer
 // for forward compatibility
@@ -98,6 +108,7 @@ type AuthenticationServer interface {
 	ResendEmail(context.Context, *ResendEmailRequest) (*BooleanResponse, error)
 	GenerateSecret(context.Context, *AccessToken) (*ScanTotp, error)
 	ValidateTemporaryToken(context.Context, *AccessToken) (*AccessToken, error)
+	ValidateTotp(context.Context, *TotpValidation) (*LoginResponse, error)
 	mustEmbedUnimplementedAuthenticationServer()
 }
 
@@ -122,6 +133,9 @@ func (UnimplementedAuthenticationServer) GenerateSecret(context.Context, *Access
 }
 func (UnimplementedAuthenticationServer) ValidateTemporaryToken(context.Context, *AccessToken) (*AccessToken, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ValidateTemporaryToken not implemented")
+}
+func (UnimplementedAuthenticationServer) ValidateTotp(context.Context, *TotpValidation) (*LoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateTotp not implemented")
 }
 func (UnimplementedAuthenticationServer) mustEmbedUnimplementedAuthenticationServer() {}
 
@@ -244,6 +258,24 @@ func _Authentication_ValidateTemporaryToken_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Authentication_ValidateTotp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TotpValidation)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServer).ValidateTotp(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Authentication/ValidateTotp",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServer).ValidateTotp(ctx, req.(*TotpValidation))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Authentication_ServiceDesc is the grpc.ServiceDesc for Authentication service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -274,6 +306,10 @@ var Authentication_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ValidateTemporaryToken",
 			Handler:    _Authentication_ValidateTemporaryToken_Handler,
+		},
+		{
+			MethodName: "ValidateTotp",
+			Handler:    _Authentication_ValidateTotp_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

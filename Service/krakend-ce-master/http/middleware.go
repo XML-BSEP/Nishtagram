@@ -1,6 +1,7 @@
 package http
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/devopsfaith/krakend-ce/grpc/client"
@@ -17,6 +18,7 @@ import (
 )
 
 var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword", "/validateTotp", "/isTotpEnabled"}
+const cookie_maxAge = 604800000
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -35,6 +37,8 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+//TODO:Remove this function after testing grpc
 
 func Middleware(ctx *gin.Context) {
 	client := resty.New()
@@ -222,7 +226,8 @@ func GrpcMiddleware(ctx *gin.Context) {
 		return
 	}
 	if ctx.FullPath() == "/validateTotp" {
-
+		ValidateTotp(ctx, grpcClient)
+		return
 	}
 
 	if !helper.ContainsElement(annonymous_endpoints, ctx.FullPath()) {
@@ -234,16 +239,13 @@ func GrpcMiddleware(ctx *gin.Context) {
 
 		ctx.Request.Header.Set("Authorization", *token)
 	}
-
 }
 
 func Login(ctx *gin.Context, client pb.AuthenticationClient) {
+
 	decoder := json.NewDecoder(ctx.Request.Body)
-
 	var authenticationCredentials dto.AuthenticationDto
-
 	err := decoder.Decode(&authenticationCredentials)
-
 	if err != nil {
 		ctx.JSON(500, "Can not decode login credentials")
 		ctx.Abort()
@@ -259,7 +261,7 @@ func Login(ctx *gin.Context, client pb.AuthenticationClient) {
 		return
 	}
 
-	http_helper.SetCookies(ctx, "at", response.AccessToken, 604800000)
+	http_helper.SetCookies(ctx, "at", response.AccessToken, cookie_maxAge)
 
 	userInfo := dto.AuthenticatedUserInfoFrontDto{Id: response.Id, Role: response.Role}
 	ctx.JSON(200, userInfo)
@@ -300,28 +302,40 @@ func IsTokenValid(ctx *gin.Context, client pb.AuthenticationClient) (*string, bo
 	}
 
 	if response.AccessToken != accessTokenId {
-		http_helper.SetCookies(ctx, "jwt", response.AccessToken, 604800000)
+		http_helper.SetCookies(ctx, "jwt", response.AccessToken, cookie_maxAge)
 	}
 	ctx.JSON(200, gin.H{"message" : "Your token is valid"})
 	return &response.AccessToken, true
 }
 
-func ValidateTemporaryToken(ctx *gin.Context, client pb.AuthenticationClient) bool {
-
+func ValidateTotp(ctx *gin.Context, client pb.AuthenticationClient) {
 	tokens := http_helper.GetTokens(ctx)
 	accessTokenId := tokens["jwt"]
 
-	accessToken := &pb.AccessToken{AccessToken: accessTokenId}
+	buf := new(bytes.Buffer)
 
-	_, err := client.ValidateTemporaryToken(ctx, accessToken)
-
+	_, err := buf.ReadFrom(ctx.Request.Body)
 	if err != nil {
-		return false
+		ctx.JSON(500, "Can not read passcode")
+		ctx.Abort()
+		return
 	}
 
-	return true
-}
+	passcodeStr := buf.String()
 
-func ValidateTotp(ctx *gin.Context, client pb.AuthenticationClient) {
+	at := &pb.AccessToken{AccessToken: accessTokenId}
+	in := &pb.TotpValidation{Passcode: passcodeStr, AccessToken: at}
+	resp, err := client.ValidateTotp(ctx, in)
 
+	if err != nil {
+		ctx.JSON(400, "Tour passcode is not valid")
+		ctx.Abort()
+		return
+	}
+
+	http_helper.SetCookies(ctx, "jwt", resp.AccessToken, cookie_maxAge)
+	ret := dto.AuthenticatedUserInfoFrontDto{Id: resp.Id, Role: resp.Role}
+	ctx.JSON(200, ret)
+	ctx.Abort()
+	return
 }

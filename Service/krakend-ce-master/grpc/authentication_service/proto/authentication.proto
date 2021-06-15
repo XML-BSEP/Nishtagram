@@ -10,6 +10,7 @@ service Authentication {
   rpc ResendEmail(ResendEmailRequest) returns (BooleanResponse);
   rpc GenerateSecret(AccessToken) returns (ScanTotp);
   rpc ValidateTemporaryToken(AccessToken) returns (AccessToken);
+  rpc ValidateTotp(TotpValidation) returns (LoginResponse);
 }
 
 service Totp {
@@ -72,4 +73,9 @@ message BoolWrapper {
 
 message Username {
   string username = 1;
+}
+
+message TotpValidation {
+  string passcode = 1;
+  AccessToken accessToken = 2;
 }
