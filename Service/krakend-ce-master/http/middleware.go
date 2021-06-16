@@ -1,7 +1,6 @@
 package http
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/devopsfaith/krakend-ce/grpc/client"
@@ -10,11 +9,11 @@ import (
 
 	"github.com/devopsfaith/krakend-ce/infrastructure/mapper"
 
+	pb "github.com/devopsfaith/krakend-ce/grpc/authentication_service/service"
 	"github.com/devopsfaith/krakend-ce/helper"
 	"github.com/devopsfaith/krakend-ce/infrastructure/dto"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
-	pb "github.com/devopsfaith/krakend-ce/grpc/authentication_service/service"
 )
 
 var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword", "/validateTotp", "/isTotpEnabled"}
@@ -156,7 +155,7 @@ func Middleware(ctx *gin.Context) {
 			}
 		}
 	}
-	if !helper.ContainsElement(annonymous_endpoints, ctx.FullPath()) {
+	/*if !helper.ContainsElement(annonymous_endpoints, ctx.FullPath()) {
 		tokenString := ctx.GetHeader("Cookie")
 		tokenstring1 := strings.Split(tokenString, "jwt=")
 		if len(tokenstring1) > 1 {
@@ -203,12 +202,12 @@ func Middleware(ctx *gin.Context) {
 			}
 		}
 
-	}
+	}*/
 
 }
 
 func GrpcMiddleware(ctx *gin.Context) {
-	grpcClient, err := client.NewauthenticationClient("127.0.0.1:8079")
+	grpcClient, err := client.NewauthenticationClient("0.0.0.0:8079")
 
 	if err != nil {
 		ctx.JSON(500, gin.H{"message" : err})
@@ -262,6 +261,7 @@ func Login(ctx *gin.Context, client pb.AuthenticationClient) {
 	}
 
 	http_helper.SetCookies(ctx, "at", response.AccessToken, cookie_maxAge)
+	http_helper.SetCookies(ctx, "rt", response.RefreshToken, cookie_maxAge)
 
 	userInfo := dto.AuthenticatedUserInfoFrontDto{Id: response.Id, Role: response.Role}
 	ctx.JSON(200, userInfo)
@@ -272,8 +272,9 @@ func Login(ctx *gin.Context, client pb.AuthenticationClient) {
 func Logout(ctx *gin.Context, client pb.AuthenticationClient) {
 
 	tokens := http_helper.GetTokens(ctx)
-	accessTokenId := tokens["jwt"]
-	authRequest := &pb.Tokens{Token: accessTokenId}
+	accessTokenId := tokens["at"]
+	refreshTokenId := tokens["rt"]
+	authRequest := &pb.Tokens{Token: accessTokenId, RefreshToken: refreshTokenId}
 	_, err := client.Logout(ctx, authRequest)
 
 	if err != nil {
@@ -290,9 +291,10 @@ func Logout(ctx *gin.Context, client pb.AuthenticationClient) {
 func IsTokenValid(ctx *gin.Context, client pb.AuthenticationClient) (*string, bool) {
 
 	tokens := http_helper.GetTokens(ctx)
-	accessTokenId := tokens["jwt"]
+	accessTokenId := tokens["at"]
+	refreshTokenId := tokens["rt"]
 
-	validationRequest := &pb.Tokens{Token: accessTokenId}
+	validationRequest := &pb.Tokens{Token: accessTokenId, RefreshToken: refreshTokenId}
 
 	response, err := client.ValidateToken(ctx, validationRequest)
 
@@ -301,39 +303,43 @@ func IsTokenValid(ctx *gin.Context, client pb.AuthenticationClient) (*string, bo
 		return nil, false
 	}
 
-	if response.AccessToken != accessTokenId {
-		http_helper.SetCookies(ctx, "jwt", response.AccessToken, cookie_maxAge)
+	if response.AccessTokenUuid != accessTokenId {
+		http_helper.SetCookies(ctx, "at", response.AccessTokenUuid, cookie_maxAge)
 	}
-	ctx.JSON(200, gin.H{"message" : "Your token is valid"})
+
+	http_helper.SetCookies(ctx, "rt", response.RefreshTokenUuid, cookie_maxAge)
+
 	return &response.AccessToken, true
 }
 
 func ValidateTotp(ctx *gin.Context, client pb.AuthenticationClient) {
 	tokens := http_helper.GetTokens(ctx)
-	accessTokenId := tokens["jwt"]
+	accessTokenId := tokens["at"]
 
-	buf := new(bytes.Buffer)
+	decoder := json.NewDecoder(ctx.Request.Body)
+	var totpValidationDto dto.TotpValidationDto
 
-	_, err := buf.ReadFrom(ctx.Request.Body)
+	err := decoder.Decode(&totpValidationDto)
+
 	if err != nil {
 		ctx.JSON(500, "Can not read passcode")
 		ctx.Abort()
 		return
 	}
 
-	passcodeStr := buf.String()
 
 	at := &pb.AccessToken{AccessToken: accessTokenId}
-	in := &pb.TotpValidation{Passcode: passcodeStr, AccessToken: at}
+	in := &pb.TotpValidation{Passcode: totpValidationDto.Passcode, AccessToken: at}
 	resp, err := client.ValidateTotp(ctx, in)
 
 	if err != nil {
-		ctx.JSON(400, "Tour passcode is not valid")
+		ctx.JSON(400, "Your passcode is not valid")
 		ctx.Abort()
 		return
 	}
 
-	http_helper.SetCookies(ctx, "jwt", resp.AccessToken, cookie_maxAge)
+	http_helper.SetCookies(ctx, "at", resp.AccessToken, cookie_maxAge)
+	http_helper.SetCookies(ctx, "rt", resp.RefreshToken, cookie_maxAge)
 	ret := dto.AuthenticatedUserInfoFrontDto{Id: resp.Id, Role: resp.Role}
 	ctx.JSON(200, ret)
 	ctx.Abort()
