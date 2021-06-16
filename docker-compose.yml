@@ -73,6 +73,7 @@ services:
       networks:
         node_net:
           ipv4_address: 172.28.1.4
+          
     authredis:
       image: "redis:alpine"
       command: redis-server
@@ -115,9 +116,7 @@ services:
       image: 'mongo:4.2.6-bionic'
       container_name: mongo-search
       ports:
-        - "27019:27017"
+        - '27019:27017'
       volumes:
         - search-data:/data/db
       restart: always
-
-    # Mongo Express Web-based MongoDB admin interface
