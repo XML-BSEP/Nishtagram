@@ -1,10 +1,12 @@
 package http
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/devopsfaith/krakend-ce/grpc/client"
 	"github.com/devopsfaith/krakend-ce/helper/http_helper"
+	"google.golang.org/grpc/metadata"
 	"strings"
 
 	"github.com/devopsfaith/krakend-ce/infrastructure/mapper"
@@ -207,7 +209,9 @@ func Middleware(ctx *gin.Context) {
 }
 
 func GrpcMiddleware(ctx *gin.Context) {
-	grpcClient, err := client.NewauthenticationClient("0.0.0.0:8079")
+
+
+	grpcClient, err := client.NewauthenticationClient("127.0.0.1:8079")
 
 	if err != nil {
 		ctx.JSON(500, gin.H{"message" : err})
@@ -328,9 +332,10 @@ func ValidateTotp(ctx *gin.Context, client pb.AuthenticationClient) {
 	}
 
 
+	grpcCtx := setGrpcAuthHeader(ctx, accessTokenId)
 	at := &pb.AccessToken{AccessToken: accessTokenId}
 	in := &pb.TotpValidation{Passcode: totpValidationDto.Passcode, AccessToken: at}
-	resp, err := client.ValidateTotp(ctx, in)
+	resp, err := client.ValidateTotp(grpcCtx, in)
 
 	if err != nil {
 		ctx.JSON(400, "Your passcode is not valid")
@@ -344,4 +349,18 @@ func ValidateTotp(ctx *gin.Context, client pb.AuthenticationClient) {
 	ctx.JSON(200, ret)
 	ctx.Abort()
 	return
+}
+
+func setGrpcAuthHeader(ctx *gin.Context, token string) context.Context {
+
+	headers := map[string][]string{}
+	headers2 := []string{token}
+
+	headers["authorization"] = headers2
+
+
+	grpcCtx := metadata.NewOutgoingContext(ctx, headers)
+
+
+	return grpcCtx
 }
