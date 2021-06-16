@@ -1164,7 +1164,29 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/getPostsByTag",
+      "headers_to_pass" : ["*"],
+      "querystring_params": [
+        "searchedTag"
+      ],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/getPostsByTag",
+          "host": [
+            "http://127.0.0.1:8087"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
-
   ]
 }
