@@ -1,132 +1,220 @@
-version: '3.8' # 2.4 is the last version that supports depends_on conditions for service health
+version: '3.7'
 
 volumes:
-    cassandra-data: {} 
-    cassandra-post-data: {} 
-    cassandra-story-data: {} 
-    redis-data: {}
-    redis.conf: {}
-    auth-redis-data: {}
-    auth-redis.conf: {}
-    follow-data: {}
-    search-data: {}
-    user-data: {}
-    auth-data: {}
-    etc-krakend : {}
+  follow-data: {}
+  auth-redis-data: {}
+  auth-redis.conf: {}
+  story-redis-data: {}
+  story-redis.conf: {}
+  auth-data: {}
+  user-data: {}
+  post-data: {}
+  story-data: {}
 
 networks:
-  cassandra:  # docker network where all cassandra nodes will be put in
+  demo:
+    name: demo
+    driver: bridge
+  storynetwork:
+    name: storynetwork
+    driver: bridge
   node_net:
     ipam:
       driver: default
       config:
         - subnet: 172.28.0.0/16
-  
+
 services:
-    auth:
-      image: postgres:latest
-      container_name: auth
-      restart: always
-      ports: 
-        - 5432:5432
-      environment:
-        POSTGRES_USER: "postgres"
-        POSTGRES_PASSWORD: "root"
-        POSTGRES_DB: authentication
-      networks:
-        - node_net
-      volumes:
-        - auth-data:/var/lib/auth
+  cassandrapost:
+    image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+    container_name: cassandrapost
+    mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+    ports:
+      - 7000:7000
+    expose:
+      - 7000
+    networks:
+        - demo
+        # node_net:
+        #     ipv4_address: 172.28.1.11
+    volumes:
+      - post-data:/var/lib/cassandra
+  cassandrastory:
+    image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+    container_name: cassandrastory
+    mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+    ports:
+      - 7001:9042
+    expose:
+      - 7001
+    networks:
+        - storynetwork
+        # node_net:
+        #     ipv4_address: 172.28.1.11
+    volumes:
+      - story-data:/var/lib/cassandra
+
+  apigateway:
+    image: apigateway
+    container_name: apigateway
+    ports:
+      - 8080:8080
+    networks: 
+        - demo
+    restart: on-failure
 
 
-    tracing:
-      image: jaegertracing/all-in-one
-      container_name: jaeger
-      ports:
-        - "6831:6831/udp"
-        - "6832:6832/udp"
-        - "16686:16686"
-        - "14268:14268"
-        - "14250:14250"
-      
+  frontend:
+    image: frontend
+    container_name: frontend
+    ports:
+      - 4200:4200
+    networks:
+      - demo
+    restart: on-failure
 
-    # cassandra_post:
-    #   image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
-    #   container_name: cassandra_post
-    #   mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
-    #   ports:
-    #     - 7000:9042
-    #   expose: 
-    #     - 7000
-    #   volumes:
-    #     - cassandra-post-data:/var/lib/cassandra
+  authpostgres:
+    image: postgres:latest
+    container_name: authpostgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: "authentication"
+    networks:
+      - demo
+    volumes:
+      - auth-data:/var/lib/auth
+    restart: on-failure
+
+  authredis:
+    image: "redis:alpine"
+    command: redis-server
+    container_name: authredis
+    ports:
+      - "6380:6379"
+    volumes:
+      - auth-redis-data:/var/lib/redis
+      - auth-redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:
+      - demo
+    restart: on-failure
+
+  storyredis:
+    image: "redis:alpine"
+    command: redis-server
+    container_name: storyredis
+    ports:
+      - "6378:6379"
+    volumes:
+      - story-redis-data:/var/lib/redis
+      - story-redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:
+      - demo
+    restart: on-failure
 
 
-    # cassandra_story:
-    #   image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
-    #   container_name: cassandra_story
-    #   mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
-    #   ports:
-    #     - 7001:9042
-    #   volumes:
-    #     - cassandra-story-data:/var/lib/cassandra
-      
-    redis:
-      image: "redis:alpine"
-      command: redis-server
-      ports:
-        - "6378:6379"
-      volumes:
-        - redis-data:/var/lib/redis
-        - redis.conf:/usr/local/etc/redis/redis.conf
-      environment:
-        - REDIS_REPLICATION_MODE=master
-      networks:
-        node_net:
-          ipv4_address: 172.28.1.4
-    authredis:
-      image: "redis:alpine"
-      command: redis-server
-      ports:
-        - "6380:6379"
-      volumes:
-        - auth-redis-data:/var/lib/redis
-        - auth-redis.conf:/usr/local/etc/redis/redis.conf
-      environment:
-        - REDIS_REPLICATION_MODE=master
-      networks:
-        node_net:
-          ipv4_address: 172.28.1.5
+  mongofollow:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongofollow
+    ports:
+      - '27017:27017'
+    networks:
+      - demo
+    volumes:
+      - follow-data:/data/db
+    restart: on-failure
 
-    mongo-follow:
-      image: 'mongo:4.2.6-bionic'
-      container_name: mongo-follow
-      ports:
-        - '27017:27017'
-      volumes:
-        - follow-data:/data/db
-      restart: always
+  mongouser:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongouser
+    ports:
+      - '27018:27017'
+    networks:
+      - demo
+    volumes:
+      - user-data:/data/db
+    restart: on-failure
 
-    #Mongo Express Web-based MongoDB admin interface
-    
+  authms:
+    image: authms
+    container_name: authms
+    depends_on:
+      - authredis
+      - authpostgres
+    environment:
+      - PORT=8091
+      - USER_DOMAIN=userms
+    networks:
+      - demo
+    ports:
+      - 8091:8091
+    restart: on-failure
 
-    # mongo-user:
-    #   image: 'mongo:4.2.6-bionic'
-    #   container_name: mongo-user
-    #   ports:
-    #     - '27018:27017'
-    #   volumes:
-    #     - user-data:/data/db
-    #   restart: always
+  followms:
+    image: followms
+    container_name: followms
+    depends_on:
+      - mongofollow
+    environment:
+      - PORT=8089
+      - USER_DOMAIN=userms
+    networks:
+      - demo
+    ports:
+      - 8089:8089
+    restart: on-failure
 
-    # Mongo Express Web-based MongoDB admin interface
-  
+  userms:
+    image: userms
+    container_name: userms
+    depends_on:
+      - mongouser
+    environment:
+      - PORT=8082
+    networks:
+      - demo
+    ports:
+      - 8082:8082
+    restart: on-failure
 
-    # mongo-search:
-    #   image: 'mongo:4.2.6-bionic'
-    #   container_name: mongo-search
-    #   ports:
-    #     - '27019:27017'
-    #   volumes:
-    #     - search-data:/data/db
-    #   restart: always
+
+  postms:
+    image: postms
+    container_name: postms
+    depends_on:
+      - cassandrapost
+    environment:
+      - PORT=8083
+      - USER_DOMAIN=userms
+      - FOLLOW_DOMAIN=followms
+    networks:
+      - demo
+    ports:
+      - 8083:8083
+    volumes:
+      - post-data:/data/db:rw
+    restart: on-failure
+
+
+  storyms:
+    image: storyms
+    container_name: storyms
+    depends_on:
+      - cassandrastory
+    environment:
+      - PORT=8084
+      - USER_DOMAIN=userms
+      - FOLLOW_DOMAIN=followms
+    networks:
+      - demo
+    ports:
+      - 8084:8084
+    volumes:
+      - story-data:/data/db:rw
+    restart: on-failure
