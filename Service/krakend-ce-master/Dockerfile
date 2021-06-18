@@ -49,9 +49,8 @@ FROM alpine:latest
 WORKDIR /root/
 
 # Copy the Pre-built binary file from the previous stage
-COPY --from=builder /app/config ./config
+COPY --from=builder /app/config_docker ./config
 COPY --from=builder /app/certificate ./certificate
 COPY --from=builder /app/main .
-
 # Command to run the executable
 CMD ["./main"]
