@@ -45,7 +45,7 @@ func main() {
 	//client := resty.New()
 	mws := []gin.HandlerFunc{func(c *gin.Context){
 
-		http.Middleware(c)
+		http.GrpcMiddleware(c)
 
 	}}
 
