@@ -18,95 +18,105 @@ networks:
         - subnet: 172.28.0.0/16
 
 services:
-  cassandrapost:
-    image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
-    container_name: cassandrapost
-    mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
-    ports:
-      - 7000:9042
-    expose:
-      - 7000
-    networks:
-        # - demo
-        node_net:
-            ipv4_address: 172.28.1.11
-    volumes:
-      - post-data:/var/lib/cassandra
-
-  # apigateway:
-  #   image: apigateway
-  #   container_name: apigateway
-  #   environment:
-  #     - PORT=8080
+  # cassandrapost:
+  #   image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+  #   container_name: cassandrapost
+  #   mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
   #   ports:
-  #     - 8080:8080
-  #   networks: 
+  #     - 7000:9042
+  #   expose:
+  #     - 7000
+  #   networks:
+  #       # - demo
   #       node_net:
-  #           ipv4_address: 172.28.1.13
+  #           ipv4_address: 172.28.1.11
+  #   volumes:
+  #     - post-data:/var/lib/cassandra
+
+  apigateway:
+    image: api
+    container_name: apigateway
+    environment:
+      - PORT=8080
+    ports:
+      - 8080:8080
+    networks: 
+        node_net:
+            ipv4_address: 172.28.1.13
+    restart: on-failure
+
+
+  frontend:
+    image: frontend
+    container_name: frontend
+    environment: 
+      - PORT = 4200
+    networks:
+      node_net:
+          ipv4_address: 172.28.1.15
+
+  # authpostgres:
+  #   image: postgres:latest
+  #   container_name: authpostgres
+  #   ports:
+  #     - 5432:5432
+  #   environment:
+  #     POSTGRES_USER: "postgres"
+  #     POSTGRES_PASSWORD: "root"
+  #     POSTGRES_DB: "authentication"
+  #   networks:
+  #     # - demo
+  #     node_net:
+  #       ipv4_address: 172.28.1.4
+  #   volumes:
+  #     - auth-data:/var/lib/auth
   #   restart: on-failure
 
-  authpostgres:
-    image: postgres:latest
-    container_name: authpostgres
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "root"
-      POSTGRES_DB: "authentication"
-    networks:
-      # - demo
-      node_net:
-        ipv4_address: 172.28.1.4
-    volumes:
-      - auth-data:/var/lib/auth
-    restart: on-failure
-
-  authredis:
-    image: "redis:alpine"
-    command: redis-server
-    container_name: authredis
-    ports:
-      - "6380:6379"
-    volumes:
-      - auth-redis-data:/var/lib/redis
-      - auth-redis.conf:/usr/local/etc/redis/redis.conf
-    environment:
-      - REDIS_REPLICATION_MODE=master
-    networks:
-      # - demo
-      node_net:
-        ipv4_address: 172.28.1.5
-    restart: on-failure
+  # authredis:
+  #   image: "redis:alpine"
+  #   command: redis-server
+  #   container_name: authredis
+  #   ports:
+  #     - "6380:6379"
+  #   volumes:
+  #     - auth-redis-data:/var/lib/redis
+  #     - auth-redis.conf:/usr/local/etc/redis/redis.conf
+  #   environment:
+  #     - REDIS_REPLICATION_MODE=master
+  #   networks:
+  #     # - demo
+  #     node_net:
+  #       ipv4_address: 172.28.1.5
+  #   restart: on-failure
 
 
-  mongofollow:
-    image: 'mongo:4.2.6-bionic'
-    container_name: mongofollow
-    ports:
-      - '27017:27017'
-    networks:
-      # - demo
+  # mongofollow:
+  #   image: 'mongo:4.2.6-bionic'
+  #   container_name: mongofollow
+  #   ports:
+  #     - '27017:27017'
+  #   networks:
+  #     # - demo
 
-      node_net:
-        ipv4_address: 172.28.1.6
-    volumes:
-      - follow-data:/data/db
-    restart: on-failure
+  #     node_net:
+  #       ipv4_address: 172.28.1.6
+  #   volumes:
+  #     - follow-data:/data/db
+  #   restart: on-failure
 
-  mongouser:
-    image: 'mongo:4.2.6-bionic'
-    container_name: mongouser
-    ports:
-      - '27018:27017'
-    networks:
-      # - demo
+  # mongouser:
+  #   image: 'mongo:4.2.6-bionic'
+  #   container_name: mongouser
+  #   ports:
+  #     - '27018:27017'
+  #   networks:
+  #     # - demo
 
-      node_net:
-        ipv4_address: 172.28.1.9
-    volumes:
-      - user-data:/data/db
-    restart: on-failure
+  #     node_net:
+  #       ipv4_address: 172.28.1.9
+  #   volumes:
+  #     - user-data:/data/db
+  #   restart: on-failure
 
   # authms:
   #   image: authimg

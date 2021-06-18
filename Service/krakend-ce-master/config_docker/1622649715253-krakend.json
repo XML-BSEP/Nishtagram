@@ -1,0 +1,1126 @@
+{
+  "version": 2,
+  "port": 8080,
+  "extra_config": {
+    "github_com/devopsfaith/krakend-cors": {
+      "allow_origins": [
+        "*"
+      ],
+      "allow_methods": [
+        "GET",
+        "HEAD",
+        "POST",
+        "OPTIONS",
+        "DELETE",
+        "PUT",
+        "PATCH"
+      ],
+      "expose_headers": [
+        "Content-Length",
+        "Content-Type"
+      ],
+      "max_age": "12h",
+      "allow_headers": [
+        "*"
+      ],
+      "allow_credentials": true,
+      "debug": false
+
+    },
+    "github_com/devopsfaith/krakend-gologging": {
+      "level": "ERROR",
+      "prefix": "[KRAKEND]",
+      "syslog": false,
+      "stdout": true,
+      "format": "default"
+    }
+  },
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "no-op",
+  "name": "Duke strategic",
+  "tls": {
+    "public_key": "certificate/cert.pem",
+    "private_key": "certificate/key.pem"
+  },
+  "endpoints": [
+    {
+      "endpoint": "/login",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/login",
+          "host": [
+            "https://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/logout",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/logout",
+          "host": [
+            "https://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/isAllowedToFollow",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/isAllowedToFollow",
+          "host": [
+            "https://followms:8089"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/cancelFollowRequest",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/cancelFollowRequest",
+          "host": [
+            "https://followms:8089"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getUserById",
+      "headers_to_pass" : ["*"],
+      "querystring_params": [
+        "userId"
+      ],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/getUserById",
+          "host": [
+            "https://userms:8082"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/addPost",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/createPost",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },{
+      "endpoint": "/getAllCollections",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getAllCollections",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getFavorites",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getFavorites",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getPostsInCollection",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getPostsInCollection",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/addToCollection",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/addToCollection",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/createCollection",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/createCollection",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/like",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/likePost",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/dislike",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/dislikePost",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/removeLike",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/removeLike",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/removeDislike",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/removeDislike",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/comment",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/comment",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getAllComments",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getAllComments",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getPostsOnProfile",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getPostsOnProfile",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getPostById",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getPostById",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getStories",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/getStories",
+          "host": [
+            "https://storyms:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/addStory",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/addStory",
+          "host": [
+            "https://storyms:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getAllStoriesOnUserProfile",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/getAllStoriesOnUserProfile",
+          "host": [
+            "https://storyms:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getHighlights",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/getHighlights",
+          "host": [
+            "https://storyms:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/addToHighlight",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/addToHighlight",
+          "host": [
+            "https://storyms:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/removeFromHighlight",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/removeFromHighlight",
+          "host": [
+            "https://storyms:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getStoriesHighlight",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/getStoriesHighlight",
+          "host": [
+            "https://storyms:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/saveHighlight",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/saveHighlight",
+          "host": [
+            "https://storyms:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/removeComment",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/removeComment",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/removeFromCollection",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/removeFromCollection",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/addFavorite",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/addFavorite",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/removeFavorite",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/removeFavorite",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/deleteCollection",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/deleteCollection",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getPostsByUser",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getPostsByUser",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/editPost",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/editPost",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/deletePost",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/deletePost",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getAllUsersFollowingFront",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/getAllUsersFollowingFront",
+          "host": [
+            "https://followms:8089"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getAllUsersFollowersFront",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/getAllUsersFollowersFront",
+          "host": [
+            "https://followms:8089"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/feed",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/feed",
+          "host": [
+            "https://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/proba",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ping8084",
+          "host": [
+            "http://127.0.0.1:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },{
+      "endpoint": "/following",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/usersFollowings",
+          "host": [
+            "https://followms:8089"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/register",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/register",
+          "host": [
+            "https://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/confirmAccount",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/confirmAccount",
+          "host": [
+            "https://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getAll",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/getAll",
+          "host": [
+            "https://userms:8082"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getUserProfileById",
+      "querystring_params": [
+        "userId"
+
+      ],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/getUserProfileById",
+          "host": [
+            "https://userms:8082"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/searchUser",
+      "querystring_params": [
+        "search"
+      ],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/searchUser",
+          "host": [
+            "https://userms:8082"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/isTotpEnabled",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/isTotpEnabled",
+          "host": [
+            "https://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/disableTotp",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/disableTotp",
+          "host": [
+            "https://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/verifySecret",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/verifySecret",
+          "host": [
+            "https://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/generateSecret",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/generateSecret",
+          "host": [
+            "https://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/resendRegistrationCode",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/resendRegistrationCode",
+          "host": [
+            "https://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/resetPasswordMail",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/resetPasswordMail",
+          "host": [
+            "https://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/resetPassword",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/resetPassword",
+          "host": [
+            "https://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/validateTotp",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/validateTotp",
+          "host": [
+            "https://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/editUser",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/editUser",
+          "host": [
+            "https://userms:8082/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    }
+  ]
+}
