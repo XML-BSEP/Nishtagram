@@ -267,6 +267,46 @@
       ]
     },
     {
+      "endpoint": "/likedMedia",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/likedMedia",
+          "host": [
+            "https://127.0.0.1:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/dislikedMedia",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/dislikedMedia",
+          "host": [
+            "https://127.0.0.1:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
       "endpoint": "/dislike",
       "method": "POST",
       "output_encoding": "no-op",
