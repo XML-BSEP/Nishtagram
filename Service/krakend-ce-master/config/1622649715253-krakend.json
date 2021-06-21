@@ -1469,6 +1469,26 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/saveNewRequestVerification",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/saveNewRequestVerification",
+          "host": [
+            "https://127.0.0.1:8082/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
   ]
 }
