@@ -213,6 +213,7 @@ func Middleware(ctx *gin.Context) {
 }
 
 func GrpcMiddleware(ctx *gin.Context) {
+
 	var domain string
 	if os.Getenv("DOCKER_ENV") == "" {
 		domain = "127.0.0.1"
@@ -220,6 +221,7 @@ func GrpcMiddleware(ctx *gin.Context) {
 		domain = "authms"
 	}
 	grpcClient, err := client.NewauthenticationClient(domain + ":8079")
+
 
 	if err != nil {
 		ctx.JSON(500, gin.H{"message" : err})
@@ -240,6 +242,7 @@ func GrpcMiddleware(ctx *gin.Context) {
 		ValidateTotp(ctx, grpcClient)
 		return
 	}
+
 
 	if !helper.ContainsElement(annonymous_endpoints, ctx.FullPath()) {
 		token, isValid := IsTokenValid(ctx, grpcClient)
