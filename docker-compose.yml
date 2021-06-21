@@ -10,6 +10,8 @@ volumes:
   user-data: {}
   post-data: {}
   story-data: {}
+  notification-data: {}
+  search-data: {}
 
 networks:
   demo:
@@ -40,6 +42,8 @@ services:
         #     ipv4_address: 172.28.1.11
     volumes:
       - post-data:/var/lib/cassandra
+
+      
   cassandrastory:
     image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
     container_name: cassandrastory
@@ -49,7 +53,7 @@ services:
     expose:
       - 7001
     networks:
-        - storynetwork
+        - demo
         # node_net:
         #     ipv4_address: 172.28.1.11
     volumes:
@@ -60,19 +64,21 @@ services:
     container_name: apigateway
     ports:
       - 8080:8080
+    environment: 
+      - DOCKER_ENV=true
     networks: 
         - demo
     restart: on-failure
 
 
-  frontend:
-    image: frontend
-    container_name: frontend
-    ports:
-      - 4200:4200
-    networks:
-      - demo
-    restart: on-failure
+  # frontend:
+  #   image: frontend
+  #   container_name: frontend
+  #   ports:
+  #     - 4200:4200
+  #   networks:
+  #     - demo
+  #   restart: on-failure
 
   authpostgres:
     image: postgres:latest
@@ -151,11 +157,35 @@ services:
     environment:
       - PORT=8091
       - USER_DOMAIN=userms
+      - DOCKER_ENV=true
     networks:
       - demo
     ports:
       - 8091:8091
     restart: on-failure
+
+  mongonotification:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongonotification
+    ports:
+      - '27020:27017'
+    volumes:
+      - notification-data:/data/db
+    restart: on-failure
+    networks:
+      - demo
+
+
+  mongosearch:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongo-search
+    ports:
+      - "27019:27017"
+    volumes:
+      - search-data:/data/db
+    restart: always
+    networks:
+      - demo
 
   followms:
     image: followms
@@ -165,10 +195,13 @@ services:
     environment:
       - PORT=8089
       - USER_DOMAIN=userms
+      - DOCKER_ENV=true
     networks:
       - demo
     ports:
       - 8089:8089
+    volumes:
+      - follow-data:/data/db:rw
     restart: on-failure
 
   userms:
@@ -178,10 +211,13 @@ services:
       - mongouser
     environment:
       - PORT=8082
+      - DOCKER_ENV=true
     networks:
       - demo
     ports:
       - 8082:8082
+    volumes:
+      - user-data:/data/db:rw
     restart: on-failure
 
 
@@ -194,6 +230,7 @@ services:
       - PORT=8083
       - USER_DOMAIN=userms
       - FOLLOW_DOMAIN=followms
+      - DOCKER_ENV=true
     networks:
       - demo
     ports:
@@ -212,6 +249,7 @@ services:
       - PORT=8084
       - USER_DOMAIN=userms
       - FOLLOW_DOMAIN=followms
+      - DOCKER_ENV=true
     networks:
       - demo
     ports:
@@ -220,6 +258,37 @@ services:
       - story-data:/data/db:rw
     restart: on-failure
 
+  searchms:
+    image: searchms
+    container_name: searchms
+    depends_on:
+      - mongosearch
+    networks:
+      - demo
+    ports:
+      - 8087:8087
+    environment: 
+      - DOCKER_ENV=true
+    volumes:
+      - search-data:/data/db:rw
+    restart: on-failure
+
+  notificationms:
+    image: notificationms
+    container_name: notificationms
+    depends_on:
+      - mongonotification
+    networks:
+      - demo
+    environment: 
+      - DOCKER_ENV=true
+    ports:
+      - 8094:8094
+    volumes:
+      - notification-data:/data/db:rw
+    restart: on-failure
+  
+  
 
 
     # tracing:
