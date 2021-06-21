@@ -56,7 +56,6 @@ COPY --from=builder /app/grpc ./grpc
 COPY --from=builder /app/helper ./helper
 COPY --from=builder /app/http ./http
 COPY --from=builder /app/infrastructure ./infrastructure
-COPY --from=builder /app/mapper ./mapper
 
 # Command to run the executable
 CMD ["./main"]
