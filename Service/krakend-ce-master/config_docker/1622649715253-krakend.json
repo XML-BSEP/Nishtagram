@@ -51,15 +51,7 @@
       "extra_config": {},
       "backend": [
         {
-          "url_pattern": "/login",
-          "host": [
-            "https://authms:8091"
-          ],
-          "encoding": "no-op",
-          "sd": "static",
-          "method": "POST",
-          "extra_config": {},
-          "disable_host_sanitize": false
+
         }
       ]
     },
@@ -70,15 +62,7 @@
       "extra_config": {},
       "backend": [
         {
-          "url_pattern": "/logout",
-          "host": [
-            "https://authms:8091"
-          ],
-          "encoding": "no-op",
-          "sd": "static",
-          "method": "POST",
-          "extra_config": {},
-          "disable_host_sanitize": false
+
         }
       ]
     },
@@ -1117,6 +1101,86 @@
           "encoding": "no-op",
           "sd": "static",
           "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/notification/block",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/notification/block",
+          "host": [
+            "http://notificationms:8094/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/notification/unblock",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/notification/unblock",
+          "host": [
+            "http://notificationms:8094/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/blockedNotification/blockedBy/{blockedBy}/blockedFor/{blockedFor}",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/blockedNotification/blockedBy/{blockedBy}/blockedFor/{blockedFor}",
+          "host": [
+            "http://notificationms:8094/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/notification/{userId}",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/notification/{userId}",
+          "host": [
+            "http://notificationms:8094/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
           "extra_config": {},
           "disable_host_sanitize": false
         }

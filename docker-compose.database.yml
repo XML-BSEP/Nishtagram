@@ -13,6 +13,7 @@ volumes:
     user-data: {}
     auth-data: {}
     etc-krakend : {}
+    notification-data : {}
 
 networks:
   cassandra:  # docker network where all cassandra nodes will be put in
@@ -28,7 +29,7 @@ services:
       container_name: authpostgres
       restart: always
       ports: 
-        - 5433:5432
+        - 5432:5432
       environment:
         POSTGRES_USER: "postgres"
         POSTGRES_PASSWORD: "root"
@@ -110,6 +111,16 @@ services:
 
     # Mongo Express Web-based MongoDB admin interface
   
+
+    
+    mongonotification:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongonotification
+      ports:
+        - '27020:27017'
+      volumes:
+        - notification-data:/data/db
+      restart: on-failure
 
     mongo-search:
       image: 'mongo:4.2.6-bionic'

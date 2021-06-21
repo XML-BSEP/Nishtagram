@@ -7,6 +7,7 @@ import (
 	"github.com/devopsfaith/krakend-ce/grpc/client"
 	"github.com/devopsfaith/krakend-ce/helper/http_helper"
 	"google.golang.org/grpc/metadata"
+	"os"
 	"strings"
 
 	"github.com/devopsfaith/krakend-ce/infrastructure/mapper"
@@ -210,8 +211,12 @@ func Middleware(ctx *gin.Context) {
 
 func GrpcMiddleware(ctx *gin.Context) {
 
+	domain :=os.Getenv("AUTH_DOMAIN")
+	if domain == "" {
+		domain = "127.0.0.1"
+	}
 
-	grpcClient, err := client.NewauthenticationClient("127.0.0.1:8079")
+	grpcClient, err := client.NewauthenticationClient(domain+":8079")
 
 	if err != nil {
 		ctx.JSON(500, gin.H{"message" : err})
@@ -232,6 +237,7 @@ func GrpcMiddleware(ctx *gin.Context) {
 		ValidateTotp(ctx, grpcClient)
 		return
 	}
+
 
 	if !helper.ContainsElement(annonymous_endpoints, ctx.FullPath()) {
 		token, isValid := IsTokenValid(ctx, grpcClient)
