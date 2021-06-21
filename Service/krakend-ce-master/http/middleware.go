@@ -7,6 +7,7 @@ import (
 	"github.com/devopsfaith/krakend-ce/grpc/client"
 	"github.com/devopsfaith/krakend-ce/helper/http_helper"
 	"google.golang.org/grpc/metadata"
+	"os"
 	"strings"
 
 	"github.com/devopsfaith/krakend-ce/infrastructure/mapper"
@@ -18,7 +19,7 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword", "/validateTotp", "/isTotpEnabled"}
+var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword", "/validateTotp", "/isTotpEnabled", "/getPostLocationsByLocationContaining", "/getPostByIdForSearch", "/searchUser", "/getPostsByTag"}
 const cookie_maxAge = 604800000
 
 func CORSMiddleware() gin.HandlerFunc {
@@ -209,9 +210,13 @@ func Middleware(ctx *gin.Context) {
 }
 
 func GrpcMiddleware(ctx *gin.Context) {
-
-
-	grpcClient, err := client.NewauthenticationClient("127.0.0.1:8079")
+	var domain string
+	if os.Getenv("DOCKER_ENV") == "" {
+		domain = "127.0.0.1"
+	} else {
+		domain = "authms"
+	}
+	grpcClient, err := client.NewauthenticationClient(domain + ":8079")
 
 	if err != nil {
 		ctx.JSON(500, gin.H{"message" : err})
