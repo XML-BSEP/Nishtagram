@@ -39,10 +39,6 @@
   "cache_ttl": "300s",
   "output_encoding": "no-op",
   "name": "Duke strategic",
-  "tls": {
-    "public_key": "certificate/cert.pem",
-    "private_key": "certificate/key.pem"
-  },
   "endpoints": [
     {
       "endpoint": "/login",
@@ -75,7 +71,7 @@
         {
           "url_pattern": "/isAllowedToFollow",
           "host": [
-            "https://followms:8089"
+            "http://followms:8089"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -94,7 +90,7 @@
         {
           "url_pattern": "/cancelFollowRequest",
           "host": [
-            "https://followms:8089"
+            "http://followms:8089"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -117,7 +113,7 @@
         {
           "url_pattern": "/getUserById",
           "host": [
-            "https://userms:8082"
+            "http://userms:8082"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -137,7 +133,7 @@
         {
           "url_pattern": "/post/createPost",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -156,7 +152,7 @@
         {
           "url_pattern": "/post/getAllCollections",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -176,7 +172,7 @@
         {
           "url_pattern": "/post/getFavorites",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -196,7 +192,7 @@
         {
           "url_pattern": "/post/getPostsInCollection",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -216,7 +212,7 @@
         {
           "url_pattern": "/post/addToCollection",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -236,7 +232,7 @@
         {
           "url_pattern": "/post/createCollection",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -256,7 +252,87 @@
         {
           "url_pattern": "/post/likePost",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/likedMedia",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/likedMedia",
+          "host": [
+            "http://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/dislikedMedia",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/dislikedMedia",
+          "host": [
+            "http://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getAllReportTypes",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getAllReportTypes",
+          "host": [
+            "http://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/reportPost",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/reportPost",
+          "host": [
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -276,7 +352,7 @@
         {
           "url_pattern": "/post/dislikePost",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -296,7 +372,7 @@
         {
           "url_pattern": "/post/removeLike",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -316,11 +392,71 @@
         {
           "url_pattern": "/post/removeDislike",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
           "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/reportStory",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/reportStory",
+          "host": [
+            "http://storyms:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getAllReportStoryTypes",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/getAllReportTypes",
+          "host": [
+            "http://storyms:8084"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getAllReportPostTypes",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getAllReportTypes",
+          "host": [
+            "http://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
           "extra_config": {},
           "disable_host_sanitize": false
         }
@@ -336,7 +472,7 @@
         {
           "url_pattern": "/post/comment",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -356,7 +492,7 @@
         {
           "url_pattern": "/post/getAllComments",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -376,7 +512,7 @@
         {
           "url_pattern": "/post/getPostsOnProfile",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -396,7 +532,7 @@
         {
           "url_pattern": "/post/getPostById",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -416,7 +552,7 @@
         {
           "url_pattern": "/story/getStories",
           "host": [
-            "https://storyms:8084"
+            "http://storyms:8084"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -436,7 +572,7 @@
         {
           "url_pattern": "/story/addStory",
           "host": [
-            "https://storyms:8084"
+            "http://storyms:8084"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -456,7 +592,7 @@
         {
           "url_pattern": "/story/getAllStoriesOnUserProfile",
           "host": [
-            "https://storyms:8084"
+            "http://storyms:8084"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -476,7 +612,7 @@
         {
           "url_pattern": "/story/getHighlights",
           "host": [
-            "https://storyms:8084"
+            "http://storyms:8084"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -496,7 +632,7 @@
         {
           "url_pattern": "/story/addToHighlight",
           "host": [
-            "https://storyms:8084"
+            "http://storyms:8084"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -516,7 +652,7 @@
         {
           "url_pattern": "/story/removeFromHighlight",
           "host": [
-            "https://storyms:8084"
+            "http://storyms:8084"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -536,7 +672,7 @@
         {
           "url_pattern": "/story/getStoriesHighlight",
           "host": [
-            "https://storyms:8084"
+            "http://storyms:8084"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -556,7 +692,7 @@
         {
           "url_pattern": "/story/saveHighlight",
           "host": [
-            "https://storyms:8084"
+            "http://storyms:8084"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -576,7 +712,7 @@
         {
           "url_pattern": "/post/removeComment",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -596,7 +732,7 @@
         {
           "url_pattern": "/post/removeFromCollection",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -616,7 +752,7 @@
         {
           "url_pattern": "/post/addFavorite",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -636,7 +772,7 @@
         {
           "url_pattern": "/post/removeFavorite",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -656,7 +792,7 @@
         {
           "url_pattern": "/post/deleteCollection",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -676,7 +812,7 @@
         {
           "url_pattern": "/post/getPostsByUser",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -696,7 +832,7 @@
         {
           "url_pattern": "/post/editPost",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -716,7 +852,7 @@
         {
           "url_pattern": "/post/deletePost",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -736,7 +872,7 @@
         {
           "url_pattern": "/getAllUsersFollowingFront",
           "host": [
-            "https://followms:8089"
+            "http://followms:8089"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -756,7 +892,7 @@
         {
           "url_pattern": "/getAllUsersFollowersFront",
           "host": [
-            "https://followms:8089"
+            "http://followms:8089"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -776,7 +912,7 @@
         {
           "url_pattern": "/post/feed",
           "host": [
-            "https://postms:8083"
+            "http://postms:8083"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -787,25 +923,6 @@
       ]
     },
     {
-      "endpoint": "/proba",
-      "method": "GET",
-      "output_encoding": "no-op",
-      "headers_to_pass" : ["*"],
-      "extra_config": {},
-      "backend": [
-        {
-          "url_pattern": "/ping8084",
-          "host": [
-            "http://127.0.0.1:8084"
-          ],
-          "encoding": "no-op",
-          "sd": "static",
-          "method": "GET",
-          "extra_config": {},
-          "disable_host_sanitize": false
-        }
-      ]
-    },{
       "endpoint": "/following",
       "method": "POST",
       "output_encoding": "no-op",
@@ -814,7 +931,7 @@
         {
           "url_pattern": "/usersFollowings",
           "host": [
-            "https://followms:8089"
+            "http://followms:8089"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -833,7 +950,7 @@
         {
           "url_pattern": "/register",
           "host": [
-            "https://authms:8091"
+            "http://authms:8091"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -852,7 +969,7 @@
         {
           "url_pattern": "/confirmAccount",
           "host": [
-            "https://authms:8091"
+            "http://authms:8091"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -871,7 +988,7 @@
         {
           "url_pattern": "/getAll",
           "host": [
-            "https://userms:8082"
+            "http://userms:8082"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -894,7 +1011,7 @@
         {
           "url_pattern": "/getUserProfileById",
           "host": [
-            "https://userms:8082"
+            "http://userms:8082"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -916,7 +1033,7 @@
         {
           "url_pattern": "/searchUser",
           "host": [
-            "https://userms:8082"
+            "http://userms:8082"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -936,7 +1053,7 @@
         {
           "url_pattern": "/isTotpEnabled",
           "host": [
-            "https://authms:8091"
+            "http://authms:8091"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -956,7 +1073,7 @@
         {
           "url_pattern": "/disableTotp",
           "host": [
-            "https://authms:8091"
+            "http://authms:8091"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -976,7 +1093,7 @@
         {
           "url_pattern": "/verifySecret",
           "host": [
-            "https://authms:8091"
+            "http://authms:8091"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -996,7 +1113,7 @@
         {
           "url_pattern": "/generateSecret",
           "host": [
-            "https://authms:8091"
+            "http://authms:8091"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -1016,7 +1133,7 @@
         {
           "url_pattern": "/resendRegistrationCode",
           "host": [
-            "https://authms:8091"
+            "http://authms:8091"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -1036,7 +1153,7 @@
         {
           "url_pattern": "/resetPasswordMail",
           "host": [
-            "https://authms:8091"
+            "http://authms:8091"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -1056,7 +1173,7 @@
         {
           "url_pattern": "/resetPassword",
           "host": [
-            "https://authms:8091"
+            "http://authms:8091"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -1076,7 +1193,7 @@
         {
           "url_pattern": "/validateTotp",
           "host": [
-            "https://authms:8091"
+            "http://authms:8091"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -1096,7 +1213,231 @@
         {
           "url_pattern": "/editUser",
           "host": [
-            "https://userms:8082/"
+            "http://userms:8082/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getPostLocationsByLocationContaining",
+      "headers_to_pass" : ["*"],
+      "querystring_params": [
+        "searchedLocation"
+      ],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/getPostLocationsByLocationContaining",
+          "host": [
+            "http://searchms:8087"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/post/getPostByIdForSearch",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "headers_to_pass" : ["*"],
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/post/getPostByIdForSearch",
+          "host": [
+            "http://postms:8083"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getPostsByTag",
+      "headers_to_pass" : ["*"],
+      "querystring_params": [
+        "searchedTag"
+      ],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/getPostsByTag",
+          "host": [
+            "http://searchms:8087"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },{
+      "endpoint": "/addToCloseFriends",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/addToCloseFriends",
+          "host": [
+            "http://followms:8089/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/removeFromCloseFriends",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/removeFromCloseFriends",
+          "host": [
+            "http://followms:8089/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/unfollow",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/unfollow",
+          "host": [
+            "http://followms:8089/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/follow",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/follow",
+          "host": [
+            "http://followms:8089/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },{
+      "endpoint": "/isUserFollowingUser",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/isUserFollowingUser",
+          "host": [
+            "http://followms:8089/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getAllRequestVerifications",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/getAllRequestVerifications",
+          "host": [
+            "http://userms:8082/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/rejectRequestVerification",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/rejectRequestVerification",
+          "host": [
+            "http://userms:8082/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/approveRequestVerification",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/approveRequestVerification",
+          "host": [
+            "http://userms:8082/"
           ],
           "encoding": "no-op",
           "sd": "static",

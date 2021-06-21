@@ -19,13 +19,16 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword", "/validateTotp", "/isTotpEnabled"}
+var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword", "/validateTotp", "/isTotpEnabled", "/getPostLocationsByLocationContaining", "/post/getPostByIdForSearch", "/searchUser", "/getPostsByTag"}
 const cookie_maxAge = 604800000
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
-		c.Header("Access-Control-Allow-Origin", "https://localhost:4200")
+		if os.Getenv("DOCKER_ENV") == "" {
+			c.Header("Access-Control-Allow-Origin", "https://localhost:4200")
+		} else {
+			c.Header("Access-Control-Allow-Origin", "http://localhost:4200")
+		}
 		c.Header("Access-Control-Allow-Credentials", "true")
 		c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		c.Header("Access-Control-Allow-Methods", "POST,HEAD,PATCH, OPTIONS, GET, PUT")
@@ -211,12 +214,14 @@ func Middleware(ctx *gin.Context) {
 
 func GrpcMiddleware(ctx *gin.Context) {
 
-	domain :=os.Getenv("AUTH_DOMAIN")
-	if domain == "" {
+	var domain string
+	if os.Getenv("DOCKER_ENV") == "" {
 		domain = "127.0.0.1"
+	} else {
+		domain = "authms"
 	}
+	grpcClient, err := client.NewauthenticationClient(domain + ":8079")
 
-	grpcClient, err := client.NewauthenticationClient(domain+":8079")
 
 	if err != nil {
 		ctx.JSON(500, gin.H{"message" : err})
