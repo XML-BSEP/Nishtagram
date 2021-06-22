@@ -1490,6 +1490,7 @@
         }
       ]
     },
+
     {
       "endpoint": "/notification/block",
       "method": "POST",
@@ -1565,6 +1566,66 @@
           "encoding": "no-op",
           "sd": "static",
           "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/muteContent",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/mute",
+          "host": [
+            "https://127.0.0.1:8083/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/unmuteContent",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/unmute",
+          "host": [
+            "https://127.0.0.1:8083/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/isMuted",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/isMuted",
+          "host": [
+            "https://127.0.0.1:8083/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
           "extra_config": {},
           "disable_host_sanitize": false
         }
