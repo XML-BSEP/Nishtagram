@@ -13,7 +13,7 @@ volumes:
     user-data: {}
     auth-data: {}
     etc-krakend : {}
-    notification-data : {}
+    notification-data: {}
 
 networks:
   cassandra:  # docker network where all cassandra nodes will be put in
@@ -22,6 +22,7 @@ networks:
       driver: default
       config:
         - subnet: 172.28.0.0/16
+  demo:
   
 services:
     authpostgres:
@@ -35,7 +36,7 @@ services:
         POSTGRES_PASSWORD: "root"
         POSTGRES_DB: authentication
       networks:
-        - node_net
+        - demo
       volumes:
         - auth-data:/var/lib/auth
       
@@ -48,6 +49,8 @@ services:
         - 7000:9042
       expose: 
         - 7000
+      networks:
+        - demo
       volumes:
         - cassandra-post-data:/var/lib/cassandra
 
@@ -58,6 +61,8 @@ services:
       mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
       ports:
         - 7001:9042
+      networks:
+        - demo
       volumes:
         - cassandra-story-data:/var/lib/cassandra
       
@@ -72,8 +77,9 @@ services:
       environment:
         - REDIS_REPLICATION_MODE=master
       networks:
+          #     # - demo
         node_net:
-          ipv4_address: 172.28.1.4
+          ipv4_address: 172.28.1.5
     authredis:
       image: "redis:alpine"
       command: redis-server
@@ -85,8 +91,9 @@ services:
       environment:
         - REDIS_REPLICATION_MODE=master
       networks:
+         #     # - demo
         node_net:
-          ipv4_address: 172.28.1.5
+          ipv4_address: 172.28.1.4
 
     mongo-follow:
       image: 'mongo:4.2.6-bionic'
@@ -99,14 +106,26 @@ services:
 
     # Mongo Express Web-based MongoDB admin interface
     
-
+    mongonotification:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongonotification
+      ports:
+        - '27020:27017'
+      volumes:
+        - notification-data:/data/db
+      restart: on-failure
+      networks:
+        - demo
+  
     mongo-user:
       image: 'mongo:4.2.6-bionic'
       container_name: mongo-user
       ports:
         - "27018:27017"
       volumes:
-        - user-data:/data/db
+        - user-data:/data/db      
+      networks:
+        - demo
       restart: always
 
     # Mongo Express Web-based MongoDB admin interface
@@ -129,6 +148,8 @@ services:
         - "27019:27017"
       volumes:
         - search-data:/data/db
-      restart: always
+      restart: always     
+      networks:
+        - demo
 
     # Mongo Express Web-based MongoDB admin interface
