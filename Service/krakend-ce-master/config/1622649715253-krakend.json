@@ -1569,6 +1569,46 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/getAllUsersFollowRequests",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/usersFollowRequests",
+          "host": [
+            "https://127.0.0.1:8089/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/approveFollowRequest",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/approveRequest",
+          "host": [
+            "https://127.0.0.1:8089/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
   ]
 }
