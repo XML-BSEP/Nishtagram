@@ -1588,6 +1588,46 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/agent",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/agent",
+          "host": [
+            "http://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/agent/validate",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/agent/validate",
+          "host": [
+            "http://authms:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
   ]
 }
