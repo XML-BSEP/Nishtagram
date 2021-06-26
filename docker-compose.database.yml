@@ -39,7 +39,23 @@ services:
         - demo
       volumes:
         - auth-data:/var/lib/auth
-      
+    authpostgres:
+      image: postgres:latest
+      container_name: authpostgres
+      ports:
+        - 5433:5432
+      environment:
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "root"
+        POSTGRES_DB: "authentication"
+      networks:
+        # - demo
+        node_net:
+          ipv4_address: 172.28.1.6
+      volumes:
+        - auth-data:/var/lib/auth
+      restart: on-failure
+
 
     cassandra_post:
       image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
