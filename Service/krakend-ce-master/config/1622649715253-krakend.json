@@ -1571,8 +1571,6 @@
         }
       ]
     },
-
-
     {
       "endpoint": "/muteContent",
       "method": "POST",
@@ -1633,7 +1631,6 @@
         }
       ]
     },
-
     {
       "endpoint": "/changePrivacyAndTagging",
       "method": "POST",
