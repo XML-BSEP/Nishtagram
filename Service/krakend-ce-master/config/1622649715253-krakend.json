@@ -1632,6 +1632,189 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/getApprovedReports",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getApprovedReports",
+          "host": [
+            "https://127.0.0.1:8083/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getPendingReports",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getPendingReports",
+          "host": [
+            "https://127.0.0.1:8083/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getRejectedReports",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/getRejectedReports",
+          "host": [
+            "https://127.0.0.1:8083/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+
+    {
+      "endpoint": "reviewReport",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/post/reviewReport",
+          "host": [
+            "https://127.0.0.1:8083/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/story/getApprovedReports",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/getApprovedReports",
+          "host": [
+            "https://127.0.0.1:8084/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/story/getPendingReports",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/getPendingReports",
+          "host": [
+            "https://127.0.0.1:8084/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/story/getRejectedReports",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/getRejectedReports",
+          "host": [
+            "https://127.0.0.1:8084/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+
+    {
+      "endpoint": "/story/reviewReport",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/reviewReport",
+          "host": [
+            "https://127.0.0.1:8084/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getStoryForAdmin",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "headers_to_pass" : ["*"],
+      "backend": [
+        {
+          "url_pattern": "/story/getStoryForAdmin",
+          "host": [
+            "https://127.0.0.1:8084/"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
   ]
+
 }
