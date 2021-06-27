@@ -29,20 +29,20 @@ networks:
   demo:
   
 services:
-    # authpostgres:
-    #   image: postgres:latest
-    #   container_name: authpostgres
-    #   restart: always
-    #   ports: 
-    #     - 5432:5432
-    #   environment:
-    #     POSTGRES_USER: "postgres"
-    #     POSTGRES_PASSWORD: "root"
-    #     POSTGRES_DB: authentication
-    #   networks:
-    #     - demo
-    #   volumes:
-    #     - auth-data:/var/lib/auth
+    authpostgres:
+      image: postgres:latest
+      container_name: authpostgres
+      restart: always
+      ports: 
+        - 5432:5432
+      environment:
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "root"
+        POSTGRES_DB: authentication
+      networks:
+        - demo
+      volumes:
+        - auth-data:/var/lib/auth
 
     webshoppostgres:
       image: postgres:latest
@@ -56,63 +56,81 @@ services:
         POSTGRES_DB: webshop
       networks:
         - demo
-      volumes: 
+      volumes:
         - webshop-data:/var/lib/webshop
 
-    # cassandra_post:
-    #   image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
-    #   container_name: cassandra_post
-    #   mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
-    #   ports:
-    #     - 7000:9042
-    #   expose: 
-    #     - 7000
-    #   networks:
-    #     - demo
-    #   volumes:
-    #     - cassandra-post-data:/var/lib/cassandra
+    authpostgres:
+      image: postgres:latest
+      container_name: authpostgres
+      ports:
+        - 5433:5432
+      environment:
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "root"
+        POSTGRES_DB: "authentication"
+      networks:
+        # - demo
+        node_net:
+          ipv4_address: 172.28.1.6
+      volumes:
+        - auth-data:/var/lib/auth
+      restart: on-failure
 
 
-    # cassandra_story:
-    #   image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
-    #   container_name: cassandra_story
-    #   mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
-    #   ports:
-    #     - 7001:9042
-    #   networks:
-    #     - demo
-    #   volumes:
-    #     - cassandra-story-data:/var/lib/cassandra
+    cassandra_post:
+      image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+      container_name: cassandra_post
+      mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+      ports:
+        - 7000:9042
+      expose: 
+        - 7000
+      networks:
+        - demo
+      volumes:
+        - cassandra-post-data:/var/lib/cassandra
+
+
+    cassandra_story:
+      image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+      container_name: cassandra_story
+      mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+      ports:
+        - 7001:9042
+      networks:
+        - demo
+      volumes:
+        - cassandra-story-data:/var/lib/cassandra
       
-    # redis:
-    #   image: "redis:alpine"
-    #   command: redis-server
-    #   ports:
-    #     - "6378:6379"
-    #   volumes:
-    #     - redis-data:/var/lib/redis
-    #     - redis.conf:/usr/local/etc/redis/redis.conf
-    #   environment:
-    #     - REDIS_REPLICATION_MODE=master
-    #   networks:
-    #       #     # - demo
-    #     node_net:
-    #       ipv4_address: 172.28.1.5
+    redis:
+      image: "redis:alpine"
+      command: redis-server
+      ports:
+        - "6378:6379"
+      volumes:
+        - redis-data:/var/lib/redis
+        - redis.conf:/usr/local/etc/redis/redis.conf
+      environment:
+        - REDIS_REPLICATION_MODE=master
+      networks:
+          #     # - demo
+        node_net:
+          ipv4_address: 172.28.1.5
 
-    # authredis:
-    #   image: "redis:alpine"
-    #   command: redis-server
-    #   ports:
-    #     - "6380:6379"
-    #   volumes:
-    #     - auth-redis-data:/var/lib/redis
-    #     - auth-redis.conf:/usr/local/etc/redis/redis.conf
-    #   environment:
-    #     - REDIS_REPLICATION_MODE=master
-    #   networks:
-    #      #     # - demo
-    #     node_net:
-    #       ipv4_address: 172.28.1.4
+    authredis:
+      image: "redis:alpine"
+      command: redis-server
+      ports:
+        - "6380:6379"
+      volumes:
+        - auth-redis-data:/var/lib/redis
+        - auth-redis.conf:/usr/local/etc/redis/redis.conf
+      environment:
+        - REDIS_REPLICATION_MODE=master
+      networks:
+         #     # - demo
+        node_net:
+          ipv4_address: 172.28.1.4
 
     webshopredis:
       image: "redis:alpine"
@@ -129,61 +147,61 @@ services:
         node_net:
           ipv4_address: 172.28.1.6
 
-    # mongo-follow:
-    #   image: 'mongo:4.2.6-bionic'
-    #   container_name: mongo-follow
-    #   ports:
-    #     - "27017:27017"
-    #   volumes:
-    #     - follow-data:/data/db
-    #   restart: always
+    mongo-follow:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongo-follow
+      ports:
+        - "27017:27017"
+      volumes:
+        - follow-data:/data/db
+      restart: always
 
     # # Mongo Express Web-based MongoDB admin interface
     
-    # mongonotification:
-    #   image: 'mongo:4.2.6-bionic'
-    #   container_name: mongonotification
-    #   ports:
-    #     - '27020:27017'
-    #   volumes:
-    #     - notification-data:/data/db
-    #   restart: on-failure
-    #   networks:
-    #     - demo
+    mongonotification:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongonotification
+      ports:
+        - '27020:27017'
+      volumes:
+        - notification-data:/data/db
+      restart: on-failure
+      networks:
+        - demo
   
-    # mongo-user:
-    #   image: 'mongo:4.2.6-bionic'
-    #   container_name: mongo-user
-    #   ports:
-    #     - "27018:27017"
-    #   volumes:
-    #     - user-data:/data/db      
-    #   networks:
-    #     - demo
-    #   restart: always
+    mongo-user:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongo-user
+      ports:
+        - "27018:27017"
+      volumes:
+        - user-data:/data/db      
+      networks:
+        - demo
+      restart: always
 
     # Mongo Express Web-based MongoDB admin interface
   
 
     
-    # mongonotification:
-    #   image: 'mongo:4.2.6-bionic'
-    #   container_name: mongonotification
-    #   ports:
-    #     - '27020:27017'
-    #   volumes:
-    #     - notification-data:/data/db
-    #   restart: on-failure
+    mongonotification:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongonotification
+      ports:
+        - '27020:27017'
+      volumes:
+        - notification-data:/data/db
+      restart: on-failure
 
-    # mongo-search:
-    #   image: 'mongo:4.2.6-bionic'
-    #   container_name: mongo-search
-    #   ports:
-    #     - "27019:27017"
-    #   volumes:
-    #     - search-data:/data/db
-    #   restart: always     
-    #   networks:
-    #     - demo
+    mongo-search:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongo-search
+      ports:
+        - "27019:27017"
+      volumes:
+        - search-data:/data/db
+      restart: always     
+      networks:
+        - demo
 
     # Mongo Express Web-based MongoDB admin interface
