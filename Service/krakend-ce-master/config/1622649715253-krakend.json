@@ -1874,6 +1874,86 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/agent",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/agent",
+          "host": [
+            "https://127.0.0.1:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/agent/validate",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/agent/validate",
+          "host": [
+            "https://127.0.0.1:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/confirmAgentAccount",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/confirmAgentAccount",
+          "host": [
+            "https://127.0.0.1:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/agent",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/agent",
+          "host": [
+            "https://127.0.0.1:8091"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
   ]
 
