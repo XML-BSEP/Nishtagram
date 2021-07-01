@@ -3,6 +3,7 @@ version: '3.8' # 2.4 is the last version that supports depends_on conditions for
 volumes:
     cassandra-data: {} 
     cassandra-post-data: {} 
+    cassandra-ad-data: {} 
     cassandra-story-data: {} 
     redis-data: {}
     redis.conf: {}
@@ -101,6 +102,17 @@ services:
         - demo
       volumes:
         - cassandra-story-data:/var/lib/cassandra
+
+    cassandra_ad:
+      image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+      container_name: cassandra_ad
+      mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+      ports:
+        - 7002:9042
+      networks:
+        - demo
+      volumes:
+        - cassandra-ad-data:/var/lib/cassandra
       
     redis:
       image: "redis:alpine"

@@ -10,6 +10,7 @@ volumes:
   user-data: {}
   post-data: {}
   story-data: {}
+  ad-data: {}
   notification-data: {}
   search-data: {}
 
@@ -43,7 +44,17 @@ services:
   #   volumes:
   #     - post-data:/var/lib/cassandra
 
-      
+  cassandraad:
+    image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+    container_name: cassandraad
+    mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+    ports:
+      - 7002:9042
+    networks:
+      - demo
+    volumes:
+      - ad-data:/var/lib/cassandra
+
   # cassandrastory:
   #   image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
   #   container_name: cassandrastory
@@ -163,6 +174,19 @@ services:
   #   ports:
   #     - 8091:8091
   #   restart: on-failure
+
+    adms:
+      image: adms
+      container_name: adms
+      depends_on:
+        - cassandraad
+      environment:
+        - PORT=8093
+      networks:
+        - demo
+      ports:
+        - 8093:8093
+      restart: on-failure
 
   # mongonotification:
   #   image: 'mongo:4.2.6-bionic'
