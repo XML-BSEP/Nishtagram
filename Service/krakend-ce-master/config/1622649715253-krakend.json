@@ -1954,6 +1954,89 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/createAd",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/createAd",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+
+    {
+      "endpoint": "/getAllAdsPerAgent",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/getAdsByAgent",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+
+    {
+      "endpoint": "/createDisposableCampaign",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/createDisposableCampaign",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+
+    {
+      "endpoint": "/createMultipleCampaign",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/createMultipleCampaign",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
   ]
 
