@@ -108,7 +108,7 @@ services:
       container_name: cassandra_ad
       mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
       ports:
-        - 7002:9042
+        - 9001:9042
       networks:
         - demo
       volumes:
@@ -157,7 +157,7 @@ services:
       networks:
           #     # - demo
         node_net:
-          ipv4_address: 172.28.1.6
+          ipv4_address: 172.28.1.9
 
     mongo-follow:
       image: 'mongo:4.2.6-bionic'
