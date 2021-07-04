@@ -2136,7 +2136,206 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/getAllUsersFollowRequests",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/usersFollowRequests",
+          "host": [
+            "https://127.0.0.1:8089"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/approveFollowRequest",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/approveRequest",
+          "host": [
+            "https://127.0.0.1:8089"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/createDisposableCampaignRequest",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/createDisposableCampaignRequest",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/createMultipleCampaignRequest",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/createMultipleCampaignRequest",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getAllDisposableCampaignRequests",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/getAllDisposableCampaignRequests",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/getAllMultipleCampaignRequests",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/getAllMultipleCampaignRequests",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/approveDisposableCampaignRequest",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/approveDisposableCampaignRequest",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/approveMultipleCampaignRequest",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/approveMultipleCampaignRequest",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/rejectDisposableCampaignRequest",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/rejectDisposableCampaignRequest",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/rejectMultipleCampaignRequest",
+      "headers_to_pass" : ["*"],
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/rejectMultipleCampaignRequest",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "POST",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
+
   ]
 
 }
