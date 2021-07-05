@@ -17,6 +17,8 @@ volumes:
     webshop-data: {}
     webshop-redis-data: {}
     webshop-redis.conf: {}
+    saga-redis-data: {}
+    saga-redis.conf: {}
 
 
 networks:
@@ -34,7 +36,7 @@ services:
       container_name: authpostgres
       restart: always
       ports: 
-        - 5432:5432
+        - 5433:5432
       environment:
         POSTGRES_USER: "postgres"
         POSTGRES_PASSWORD: "root"
@@ -59,22 +61,7 @@ services:
       volumes:
         - webshop-data:/var/lib/webshop
 
-    authpostgres:
-      image: postgres:latest
-      container_name: authpostgres
-      ports:
-        - 5433:5432
-      environment:
-        POSTGRES_USER: "postgres"
-        POSTGRES_PASSWORD: "root"
-        POSTGRES_DB: "authentication"
-      networks:
-        # - demo
-        node_net:
-          ipv4_address: 172.28.1.6
-      volumes:
-        - auth-data:/var/lib/auth
-      restart: on-failure
+ 
 
 
     cassandra_post:
@@ -204,4 +191,18 @@ services:
       networks:
         - demo
 
+    sagaredis:
+      image: "redis:alpine"
+      command: redis-server
+      ports:
+        - "6381:6379"
+      volumes:
+        - saga-redis-data:/var/lib/redis
+        - saga-redis.conf:/usr/local/etc/redis/redis.conf
+      environment:
+        - REDIS_REPLICATION_MODE=master
+      networks:
+          #     # - demo
+        node_net:
+          ipv4_address: 172.28.1.11
     # Mongo Express Web-based MongoDB admin interface
