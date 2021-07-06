@@ -2334,7 +2334,73 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+
+    {
+      "endpoint": "/getAllPostAds",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/getAllPostAds",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+
+
+    {
+      "endpoint": "/getAllStoryAds",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/getAllStoryAds",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+
+    {
+      "endpoint": "/generateApiToken",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/generateApiToken",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
+
+
 
   ]
 

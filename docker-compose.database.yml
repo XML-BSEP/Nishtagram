@@ -13,6 +13,7 @@ volumes:
     search-data: {}
     user-data: {}
     auth-data: {}
+    webshop-mongo-data: {}
     etc-krakend : {}
     notification-data: {}
     webshop-data: {}
@@ -102,17 +103,6 @@ services:
         - demo
       volumes:
         - cassandra-story-data:/var/lib/cassandra
-
-    cassandra_ad:
-      image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
-      container_name: cassandra_ad
-      mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
-      ports:
-        - 9001:9042
-      networks:
-        - demo
-      volumes:
-        - cassandra-ad-data:/var/lib/cassandra
       
     redis:
       image: "redis:alpine"
@@ -212,6 +202,16 @@ services:
         - "27019:27017"
       volumes:
         - search-data:/data/db
+      restart: always     
+      networks:
+        - demo
+    mongo-webshop:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongo-webshop
+      ports:
+        - "27021:27017"
+      volumes:
+        - webshop-mongo-data
       restart: always     
       networks:
         - demo
