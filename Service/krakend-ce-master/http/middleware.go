@@ -19,7 +19,7 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword", "/validateTotp", "/isTotpEnabled", "/getPostLocationsByLocationContaining", "/post/getPostByIdForSearch", "/searchUser", "/getPostsByTag", "/agent", "/agent/validate"}
+var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword", "/validateTotp", "/isTotpEnabled", "/getPostLocationsByLocationContaining", "/post/getPostByIdForSearch", "/searchUser", "/getPostsByTag", "/agent", "/agent/validate", "/room/:roomId", "/ws/:roomId", "/message/:receiver/:sender"}
 const cookie_maxAge = 604800000
 
 func CORSMiddleware() gin.HandlerFunc {
