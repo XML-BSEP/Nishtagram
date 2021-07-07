@@ -2416,6 +2416,26 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/blocked/{blockedBy}/{blockedFor}",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/blocked/{blockedBy}/{blockedFor}",
+          "host": [
+            "http://127.0.0.1:8052"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
   ]
 
