@@ -19,6 +19,7 @@ volumes:
     webshop-data: {}
     webshop-redis-data: {}
     webshop-redis.conf: {}
+    data_exist: 
     saga-redis-data: {}
     saga-redis.conf: {}
 
@@ -202,6 +203,19 @@ services:
       restart: always     
       networks:
         - demo
+    
+    xmldb:
+      image: existdb/existdb:release
+      container_name: xmldb
+      restart: always
+      ports:
+          - 8095:8080
+      volumes:
+          - type: volume
+            source: data_exist
+            target: /exist-data
+      networks:
+          - demo
 
     sagaredis:
       image: "redis:alpine"
@@ -217,4 +231,3 @@ services:
           #     # - demo
         node_net:
           ipv4_address: 172.28.1.11
-    # Mongo Express Web-based MongoDB admin interface
