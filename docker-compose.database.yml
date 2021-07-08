@@ -19,6 +19,7 @@ volumes:
     webshop-data: {}
     webshop-redis-data: {}
     webshop-redis.conf: {}
+    data_exist: 
 
 
 networks:
@@ -215,5 +216,19 @@ services:
       restart: always     
       networks:
         - demo
+
+    
+    xmldb:
+      image: existdb/existdb:release
+      container_name: xmldb
+      restart: always
+      ports:
+          - 8095:8080
+      volumes:
+          - type: volume
+            source: data_exist
+            target: /exist-data
+      networks:
+          - demo
 
     # Mongo Express Web-based MongoDB admin interface
