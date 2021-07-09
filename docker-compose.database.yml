@@ -22,7 +22,7 @@ volumes:
     data_exist: 
     saga-redis-data: {}
     saga-redis.conf: {}
-
+    message-data: {}
 
 networks:
   cassandra:  # docker network where all cassandra nodes will be put in
@@ -231,3 +231,13 @@ services:
           #     # - demo
         node_net:
           ipv4_address: 172.28.1.11
+
+    mongomessage:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongomessage
+      ports:
+        - '27021:27017'
+      volumes:
+        - message-data:/data/db
+      restart: on-failure
+    # Mongo Express Web-based MongoDB admin interface

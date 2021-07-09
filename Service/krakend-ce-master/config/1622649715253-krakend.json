@@ -2545,6 +2545,108 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/room/{roomId}",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/room/{roomId}",
+          "host": [
+            "http://127.0.0.1:8052"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/ws/{roomId}",
+      "method": "GET",
+      "querystring_params":[ "*" ],
+      "headers_to_pass":[ "*" ],
+      "backend": [
+        {
+          "url_pattern": "/ws/{roomId}",
+          "disable_host_sanitize": true,
+          "method": "GET",
+          "host": [ "ws://127.0.0.1:8052" ]
+        }
+      ],
+      "extra_config":{
+        "github.com/devopsfaith/krakend-websocket": {
+          "headers_to_pass":["Cookie", "Authorization"],
+          "connect_event": true,
+          "disconnect_event": true
+        }
+      }
+    },
+
+    {
+      "endpoint": "/message/{receiver}/{sender}",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/message/{receiver}/{sender}",
+          "host": [
+            "http://127.0.0.1:8052"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/users/{userId}",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/users/{userId}",
+          "host": [
+            "http://127.0.0.1:8052"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/blocked/{blockedBy}/{blockedFor}",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/blocked/{blockedBy}/{blockedFor}",
+          "host": [
+            "http://127.0.0.1:8052"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
 
 

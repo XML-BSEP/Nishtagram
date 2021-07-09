@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/devopsfaith/krakend-ce/grpc/client"
 	"github.com/devopsfaith/krakend-ce/helper/http_helper"
 	"google.golang.org/grpc/metadata"
-	"os"
-	"strings"
 
 	"github.com/devopsfaith/krakend-ce/infrastructure/mapper"
 
@@ -19,7 +20,8 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword", "/validateTotp", "/isTotpEnabled", "/getPostLocationsByLocationContaining", "/post/getPostByIdForSearch", "/searchUser", "/getPostsByTag", "/agent", "/agent/validate", "createAd"}
+var annonymous_endpoints = []string{"/register", "/confirmAccount", "/getAll", "/getUserProfileById", "/isAllowedToFollow", "/resendRegistrationCode", "/resetPasswordMail", "/resetPassword", "/validateTotp", "/isTotpEnabled", "/getPostLocationsByLocationContaining", "/post/getPostByIdForSearch", "/searchUser", "/getPostsByTag", "/agent", "/agent/validate", "/room/:roomId", "/ws/:roomId", "/message/:receiver/:sender", "createAd"}
+
 const cookie_maxAge = 604800000
 
 func CORSMiddleware() gin.HandlerFunc {
@@ -222,9 +224,8 @@ func GrpcMiddleware(ctx *gin.Context) {
 	}
 	grpcClient, err := client.NewauthenticationClient(domain + ":8079")
 
-
 	if err != nil {
-		ctx.JSON(500, gin.H{"message" : err})
+		ctx.JSON(500, gin.H{"message": err})
 		ctx.Abort()
 		return
 	}
@@ -242,7 +243,6 @@ func GrpcMiddleware(ctx *gin.Context) {
 		ValidateTotp(ctx, grpcClient)
 		return
 	}
-
 
 	if !helper.ContainsElement(annonymous_endpoints, ctx.FullPath()) {
 		token, isValid := IsTokenValid(ctx, grpcClient)
@@ -270,7 +270,7 @@ func Login(ctx *gin.Context, client pb.AuthenticationClient) {
 	response, err := client.Login(ctx, loginCredentials)
 
 	if err != nil {
-		ctx.JSON(400, gin.H{"message" : "Invalid credentials"})
+		ctx.JSON(400, gin.H{"message": "Invalid credentials"})
 		ctx.Abort()
 		return
 	}
@@ -293,12 +293,12 @@ func Logout(ctx *gin.Context, client pb.AuthenticationClient) {
 	_, err := client.Logout(ctx, authRequest)
 
 	if err != nil {
-		ctx.JSON(400, gin.H{"message" : "Logout error"})
+		ctx.JSON(400, gin.H{"message": "Logout error"})
 		ctx.Abort()
 		return
 	}
 
-	ctx.JSON(200, gin.H{"message" : "Logout successful"})
+	ctx.JSON(200, gin.H{"message": "Logout successful"})
 	ctx.Abort()
 	return
 }
@@ -314,7 +314,7 @@ func IsTokenValid(ctx *gin.Context, client pb.AuthenticationClient) (*string, bo
 	response, err := client.ValidateToken(ctx, validationRequest)
 
 	if err != nil {
-		ctx.JSON(400, gin.H{"message" : "Your token is not valid"})
+		ctx.JSON(400, gin.H{"message": "Your token is not valid"})
 		return nil, false
 	}
 
@@ -342,7 +342,6 @@ func ValidateTotp(ctx *gin.Context, client pb.AuthenticationClient) {
 		return
 	}
 
-
 	grpcCtx := setGrpcAuthHeader(ctx, accessTokenId)
 	at := &pb.AccessToken{AccessToken: accessTokenId}
 	in := &pb.TotpValidation{Passcode: totpValidationDto.Passcode, AccessToken: at}
@@ -369,9 +368,7 @@ func setGrpcAuthHeader(ctx *gin.Context, token string) context.Context {
 
 	headers["authorization"] = headers2
 
-
 	grpcCtx := metadata.NewOutgoingContext(ctx, headers)
-
 
 	return grpcCtx
 }
