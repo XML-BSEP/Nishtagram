@@ -23,6 +23,7 @@ volumes:
     saga-redis-data: {}
     saga-redis.conf: {}
     message-data: {}
+    neo4j-data: {}
 
 networks:
   cassandra:  # docker network where all cassandra nodes will be put in
@@ -64,9 +65,6 @@ services:
       volumes:
         - webshop-data:/var/lib/webshop
 
- 
-
-
     cassandra_post:
       image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
       container_name: cassandra_post
@@ -79,7 +77,6 @@ services:
         - demo
       volumes:
         - cassandra-post-data:/var/lib/cassandra
-
 
     cassandra_story:
       image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
@@ -172,8 +169,6 @@ services:
 
     # Mongo Express Web-based MongoDB admin interface
   
-
-    
     mongonotification:
       image: 'mongo:4.2.6-bionic'
       container_name: mongonotification
@@ -197,9 +192,9 @@ services:
       image: 'mongo:4.2.6-bionic'
       container_name: mongo-webshop
       ports:
-        - "27021:27017"
+        - "27022:27017"
       volumes:
-        - webshop-mongo-data
+        - webshop-mongo-data:/data/db
       restart: always     
       networks:
         - demo
@@ -241,3 +236,21 @@ services:
         - message-data:/data/db
       restart: on-failure
     # Mongo Express Web-based MongoDB admin interface
+
+    neo4j:
+      container_name: neo4j
+      image: neo4j
+      restart: always
+      environment: 
+          - NEO4J_dbms_connector_bolt_advertised__address=0.0.0.0:7687
+          - NEO4J_dbms_connector_bolt_listen__address=0.0.0.0:7687
+          - NEO4J_AUTH=neo4j/root
+      networks: 
+          - demo
+      ports: 
+          - 7474:7474
+          - 7687:7687 
+      volumes: 
+          - type: volume
+            source: neo4j-data
+            target: /data

@@ -1977,7 +1977,7 @@
     },
 
     {
-      "endpoint": "/getAllAdsPerAgent",
+      "endpoint": "/getAdsByAgent",
       "headers_to_pass" : ["*"],
       "method": "GET",
       "output_encoding": "no-op",
@@ -2647,9 +2647,50 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+
+    {
+      "endpoint": "/recommend/{userId}",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/recommend/{userId}",
+          "host": [
+            "https://127.0.0.1:8089"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+
+
+    {
+      "endpoint": "/generateStatisticReport",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/ad/generateStatisticReport",
+          "host": [
+            "http://127.0.0.1:8093"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
-
-
   ]
 
 }
