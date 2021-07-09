@@ -1,0 +1,36 @@
+# my global config
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']
+
+  - job_name: 'nishtagram-auth'
+    static_configs:
+      - targets: ['authms:8091']
+
+  - job_name: 'nistagram-search'
+    static_configs:
+      - targets: ['searchms:8087']
+
+  - job_name: 'nishtagram-user'
+    static_configs:
+      - targets: ['userms:8082']
+
+  - job_name: 'nistagram-story'
+    static_configs:
+      - targets: ['storyms:8084']
+
+  - job_name: 'nistagram-post'
+    static_configs:
+      - targets: ['postms:8083']
+
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana:3000']
+
+ 

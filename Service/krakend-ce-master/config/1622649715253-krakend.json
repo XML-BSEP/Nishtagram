@@ -2647,6 +2647,47 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/recommend/{userId}",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/recommend/{userId}",
+          "host": [
+            "https://127.0.0.1:8089"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+
+    {
+      "endpoint": "/isAllowedToSee/{messageId}",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/isAllowedToSee/{messageId}",
+          "host": [
+            "http://127.0.0.1:8052"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
     }
 
 
