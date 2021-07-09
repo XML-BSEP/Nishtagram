@@ -22,6 +22,11 @@ volumes:
     saga-redis-data: {}
     saga-redis.conf: {}
     message-data: {}
+    grafana: {}
+    story-data: {}
+    story-redis-data: {}
+    story-redis.conf: {}
+    post-data: {}
 
 networks:
   cassandra:  # docker network where all cassandra nodes will be put in
@@ -29,10 +34,53 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.28.0.0/16
+        - subnet: 172.29.0.0/16
   demo:
+    
   
 services:
+
+    prometheus:
+      image: prom/prometheus:latest
+      volumes:
+        - ./prometheus:/etc/prometheus/
+      command:
+        - '--config.file=/etc/prometheus/prometheus.yml'
+        - '--storage.tsdb.path=/prometheus'
+      ports:
+        - 9090:9090
+      depends_on:
+        - authms
+      networks:
+        - demo
+
+
+    grafana:
+      image: grafana/grafana:latest
+      ports:
+        - 3000:3000
+      depends_on:
+        - prometheus
+      networks:
+        - demo
+
+    authms:
+      image: authms
+      container_name: authms
+      depends_on:
+        - authredis
+        - authpostgres
+        - sagaredis
+      environment:
+        - PORT=8091
+        - USER_DOMAIN=userms
+        - DOCKER_ENV=true
+      networks:
+        - demo
+      ports:
+        - 8091:8091
+      restart: on-failure
+
     authpostgres:
       image: postgres:latest
       container_name: authpostgres
@@ -48,63 +96,7 @@ services:
       volumes:
         - auth-data:/var/lib/auth
 
-    webshoppostgres:
-      image: postgres:latest
-      container_name: webshoppostgres
-      restart: always
-      ports: 
-        - 5434:5432
-      environment:
-        POSTGRES_USER: "postgres"
-        POSTGRES_PASSWORD: "root"
-        POSTGRES_DB: webshop
-      networks:
-        - demo
-      volumes:
-        - webshop-data:/var/lib/webshop
-
- 
-
-
-    cassandra_post:
-      image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
-      container_name: cassandra_post
-      mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
-      ports:
-        - 7000:9042
-      expose: 
-        - 7000
-      networks:
-        - demo
-      volumes:
-        - cassandra-post-data:/var/lib/cassandra
-
-
-    cassandra_story:
-      image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
-      container_name: cassandra_story
-      mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
-      ports:
-        - 7001:9042
-      networks:
-        - demo
-      volumes:
-        - cassandra-story-data:/var/lib/cassandra
-      
-    redis:
-      image: "redis:alpine"
-      command: redis-server
-      ports:
-        - "6378:6379"
-      volumes:
-        - redis-data:/var/lib/redis
-        - redis.conf:/usr/local/etc/redis/redis.conf
-      environment:
-        - REDIS_REPLICATION_MODE=master
-      networks:
-          #     # - demo
-        node_net:
-          ipv4_address: 172.28.1.5
+    
 
     authredis:
       image: "redis:alpine"
@@ -117,91 +109,92 @@ services:
       environment:
         - REDIS_REPLICATION_MODE=master
       networks:
-         #     # - demo
-        node_net:
-          ipv4_address: 172.28.1.4
-
-    webshopredis:
-      image: "redis:alpine"
-      command: redis-server
+        - demo
+        
+    searchms:
+      image: searchms
+      container_name: searchms
+      depends_on:
+        - mongosearch
+      networks:
+        - demo
       ports:
-        - "6400:6379"
+        - 8087:8087
+      environment: 
+        - DOCKER_ENV=true
       volumes:
-        - webshop-redis-data:/var/lib/redis
-        - webshop-redis.conf:/usr/local/etc/redis/redis.conf
+        - search-data:/data/db:rw
+      restart: on-failure
+      networks:
+        - demo
+
+    userms:
+      image: userms
+      container_name: userms
+      depends_on:
+        - mongouser
+        - sagaredis
       environment:
-        - REDIS_REPLICATION_MODE=master
-      networks:
-          #     # - demo
-        node_net:
-          ipv4_address: 172.28.1.9
-
-    mongo-follow:
-      image: 'mongo:4.2.6-bionic'
-      container_name: mongo-follow
-      ports:
-        - "27017:27017"
-      volumes:
-        - follow-data:/data/db
-      restart: always
-
-    # # Mongo Express Web-based MongoDB admin interface
-    
-    mongonotification:
-      image: 'mongo:4.2.6-bionic'
-      container_name: mongonotification
-      ports:
-        - '27020:27017'
-      volumes:
-        - notification-data:/data/db
-      restart: on-failure
+        - PORT=8082
+        - DOCKER_ENV=true
       networks:
         - demo
-  
-    mongo-user:
-      image: 'mongo:4.2.6-bionic'
-      container_name: mongo-user
       ports:
-        - "27018:27017"
+        - 8082:8082
       volumes:
-        - user-data:/data/db      
-      networks:
-        - demo
-      restart: always
-
-    # Mongo Express Web-based MongoDB admin interface
-  
-
-    
-    mongonotification:
-      image: 'mongo:4.2.6-bionic'
-      container_name: mongonotification
-      ports:
-        - '27020:27017'
-      volumes:
-        - notification-data:/data/db
+        - user-data:/data/db:rw
       restart: on-failure
 
-    mongo-search:
-      image: 'mongo:4.2.6-bionic'
-      container_name: mongo-search
-      ports:
-        - "27019:27017"
-      volumes:
-        - search-data:/data/db
-      restart: always     
+    storyms:
+      image: storyms
+      container_name: storyms
+      depends_on:
+        - cassandrastory
+      environment:
+        - PORT=8084
+        - USER_DOMAIN=userms
+        - FOLLOW_DOMAIN=followms
+        - DOCKER_ENV=true
       networks:
         - demo
-    mongo-webshop:
-      image: 'mongo:4.2.6-bionic'
-      container_name: mongo-webshop
       ports:
-        - "27021:27017"
+        - 8084:8084
       volumes:
-        - webshop-mongo-data
-      restart: always     
+        - story-data:/data/db:rw
+      restart: on-failure
+      
+    notificationms:
+      image: notificationms
+      container_name: notificationms
+      depends_on:
+        - mongonotification
       networks:
         - demo
+      environment: 
+        - DOCKER_ENV=true
+      ports:
+        - 8094:8094
+      volumes:
+        - notification-data:/data/db:rw
+      restart: on-failure
+
+    postms:
+      image: postms
+      container_name: postms
+      depends_on:
+        - cassandrapost
+      environment:
+        - PORT=8083
+        - USER_DOMAIN=userms
+        - FOLLOW_DOMAIN=followms
+        - DOCKER_ENV=true
+      networks:
+        - demo
+      ports:
+        - 8083:8083
+      volumes:
+        - post-data:/data/db:rw
+      restart: on-failure
 
     sagaredis:
       image: "redis:alpine"
@@ -214,16 +207,81 @@ services:
       environment:
         - REDIS_REPLICATION_MODE=master
       networks:
-          #     # - demo
-        node_net:
-          ipv4_address: 172.28.1.11
+        - demo
 
-    mongomessage:
+    mongosearch:
       image: 'mongo:4.2.6-bionic'
-      container_name: mongomessage
+      container_name: mongo-search
       ports:
-        - '27021:27017'
+        - "27019:27017"
       volumes:
-        - message-data:/data/db
+        - search-data:/data/db
+      restart: always     
+      networks:
+        - demo
+
+    mongouser:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongouser
+      ports:
+        - '27018:27017'
+      networks:
+        - demo
+      volumes:
+        - user-data:/data/db
       restart: on-failure
-    # Mongo Express Web-based MongoDB admin interface
+
+    mongonotification:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongonotification
+      ports:
+        - '27020:27017'
+      volumes:
+        - notification-data:/data/db
+      restart: on-failure
+      networks:
+        - demo
+
+    cassandrastory:
+      image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+      container_name: cassandrastory
+      mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+      ports:
+        - 7001:9042
+      expose:
+        - 7001
+      networks:
+          - demo
+      volumes:
+        - story-data:/var/lib/cassandra
+
+    storyredis:
+      image: "redis:alpine"
+      command: redis-server
+      container_name: storyredis
+      ports:
+        - "6378:6379"
+      volumes:
+        - story-redis-data:/var/lib/redis
+        - story-redis.conf:/usr/local/etc/redis/redis.conf
+      environment:
+        - REDIS_REPLICATION_MODE=master
+      networks:
+        - demo
+      restart: on-failure   
+    
+    cassandrapost:
+      image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+      container_name: cassandrapost
+      mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+      ports:
+        - 7000:7000
+      expose:
+        - 7000
+      networks:
+          - demo
+        
+      volumes:
+        - post-data:/var/lib/cassandra 
+
+    
