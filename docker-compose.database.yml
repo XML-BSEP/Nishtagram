@@ -19,6 +19,7 @@ volumes:
     webshop-data: {}
     webshop-redis-data: {}
     webshop-redis.conf: {}
+    data_exist: 
     saga-redis-data: {}
     saga-redis.conf: {}
     message-data: {}
@@ -254,6 +255,20 @@ services:
           - demo
       volumes:
         - story-data:/var/lib/cassandra
+        - demo
+    
+    xmldb:
+      image: existdb/existdb:release
+      container_name: xmldb
+      restart: always
+      ports:
+          - 8095:8080
+      volumes:
+          - type: volume
+            source: data_exist
+            target: /exist-data
+      networks:
+          - demo
 
     storyredis:
       image: "redis:alpine"
@@ -285,3 +300,6 @@ services:
         - post-data:/var/lib/cassandra 
 
     
+        - message-data:/data/db
+      restart: on-failure
+    # Mongo Express Web-based MongoDB admin interface
