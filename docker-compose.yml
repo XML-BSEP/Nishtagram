@@ -26,6 +26,7 @@ volumes:
   saga-redis.conf: {}
   message-data: {}
   neo4j-data: {}
+  grafana: {}
 
 networks:
   demo:
@@ -228,9 +229,7 @@ services:
     environment:
       - REDIS_REPLICATION_MODE=master
     networks:
-        #     # - demo
-      node_net:
-        ipv4_address: 172.28.1.9
+      - demo
 
   webshop:
     image: jelenavlajkov/webshop
@@ -240,17 +239,17 @@ services:
       - webshopredis
       - mongowebshop
     environment:
-      - PORT=8091
+      - PORT=8099
       - USER_DOMAIN=userms
       - DOCKER_ENV=true
-      - NISHTAGRAM_DOMAIN=apigateway
+      - NISHTAGRAM_DOMAIN=adms
     networks:
       - demo
     ports:
-      - 443:443
+      - 8099:8099
     restart: on-failure
     volumes:
-      - /documents:/src/documents
+      - ${PWD}/documents/:/app/src/documents/
 
   adms:
     image: jelenavlajkov/adms
@@ -260,6 +259,10 @@ services:
     environment:
       - PORT=8093
       - DOCKER_ENV=true
+      - POST_DOMAIN=postms
+      - STORY_DOMAIN=storyms
+      - USER_DOMAIN=userms
+      - SEARCH_DOMAIN=searchms
     networks:
       - demo
     ports:
@@ -275,6 +278,8 @@ services:
     environment:
       - PORT=8052
       - DOCKER_ENV=true
+      - FOLLOW_DOMAIN=followms
+      - USER_DOMAIN=userms
     networks:
       - demo
     ports:
@@ -340,6 +345,8 @@ services:
     environment:
       - PORT=8082
       - DOCKER_ENV=true
+      - AUTH_DOMAIN=authms
+      - FOLLOW_DOMAIN=followms
     networks:
       - demo
     ports:
@@ -424,6 +431,40 @@ services:
     volumes:
       - message-data:/data/db
     restart: on-failure
+    networks:
+      - demo
+
+  neo4j:
+    container_name: neo4j
+    image: neo4j
+    restart: always
+    environment: 
+        - NEO4J_dbms_connector_bolt_advertised__address=0.0.0.0:7687
+        - NEO4J_dbms_connector_bolt_listen__address=0.0.0.0:7687
+        - NEO4J_AUTH=neo4j/root
+    networks: 
+        - demo
+    ports: 
+        - 7474:7474
+        - 7687:7687 
+    volumes: 
+        - type: volume
+          source: neo4j-data
+          target: /data
+
+      
+  xmldb:
+    image: existdb/existdb:release
+    container_name: xmldb
+    restart: always
+    ports:
+        - 8095:8080
+    volumes:
+        - type: volume
+          source: data_exist
+          target: /exist-data
+    networks:
+        - demo
 
 
 

@@ -1,0 +1,168 @@
+version: '3.8' # 2.4 is the last version that supports depends_on conditions for service health
+
+volumes:
+    cassandra-data: {} 
+    cassandra-post-data: {} 
+    cassandra-ad-data: {} 
+    cassandra-story-data: {} 
+    redis-data: {}
+    redis.conf: {}
+    auth-redis-data: {}
+    auth-redis.conf: {}
+    follow-data: {}
+    search-data: {}
+    user-data: {}
+    auth-data: {}
+    webshop-mongo-data: {}
+    etc-krakend : {}
+    notification-data: {}
+    webshop-data: {}
+    webshop-redis-data: {}
+    webshop-redis.conf: {}
+    saga-redis-data: {}
+    saga-redis.conf: {}
+    message-data: {}
+    grafana: {}
+    story-data: {}
+    story-redis-data: {}
+    story-redis.conf: {}
+    post-data: {}
+
+networks:
+  cassandra:  # docker network where all cassandra nodes will be put in
+  node_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.29.0.0/16
+  demo:
+    
+  
+services:
+
+    
+
+    authpostgres:
+      image: postgres:latest
+      container_name: authpostgres
+      restart: always
+      ports: 
+        - 5433:5432
+      environment:
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "root"
+        POSTGRES_DB: authentication
+      networks:
+        - demo
+      volumes:
+        - auth-data:/var/lib/auth
+
+    
+
+    authredis:
+      image: "redis:alpine"
+      command: redis-server
+      ports:
+        - "6380:6379"
+      volumes:
+        - auth-redis-data:/var/lib/redis
+        - auth-redis.conf:/usr/local/etc/redis/redis.conf
+      environment:
+        - REDIS_REPLICATION_MODE=master
+      networks:
+        - demo
+        
+    
+
+    sagaredis:
+      image: "redis:alpine"
+      command: redis-server
+      ports:
+        - "6381:6379"
+      volumes:
+        - saga-redis-data:/var/lib/redis
+        - saga-redis.conf:/usr/local/etc/redis/redis.conf
+      environment:
+        - REDIS_REPLICATION_MODE=master
+      networks:
+        - demo
+
+    mongosearch:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongo-search
+      ports:
+        - "27019:27017"
+      volumes:
+        - search-data:/data/db
+      restart: always     
+      networks:
+        - demo
+
+    mongouser:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongouser
+      ports:
+        - '27018:27017'
+      networks:
+        - demo
+      volumes:
+        - user-data:/data/db
+      restart: on-failure
+
+    mongonotification:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongonotification
+      ports:
+        - '27020:27017'
+      volumes:
+        - notification-data:/data/db
+      restart: on-failure
+      networks:
+        - demo
+
+   
+
+    storyredis:
+      image: "redis:alpine"
+      command: redis-server
+      container_name: storyredis
+      ports:
+        - "6378:6379"
+      volumes:
+        - story-redis-data:/var/lib/redis
+        - story-redis.conf:/usr/local/etc/redis/redis.conf
+      environment:
+        - REDIS_REPLICATION_MODE=master
+      networks:
+        - demo
+      restart: on-failure   
+
+    mongomessage:
+        image: 'mongo:4.2.6-bionic'
+        container_name: mongomessage
+        ports:
+            - '27021:27017'
+        volumes:
+            - message-data:/data/db
+        restart: on-failure
+    
+    mongofollow:
+      image: 'mongo:4.2.6-bionic'
+      container_name: mongofollow
+      ports:
+        - '27017:27017'
+      networks:
+        - demo
+      volumes:
+        - follow-data:/data/db
+      restart: on-failure  
+
+    tracing:
+      image: jaegertracing/all-in-one
+      container_name: jaeger
+      ports:
+        - "6831:6831/udp"
+        - "6832:6832/udp"
+        - "16686:16686"
+        - "14268:14268"
+        - "14250:14250"
