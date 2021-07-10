@@ -43,6 +43,30 @@ networks:
 
 services:
 
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - 9090:9090
+    depends_on:
+      - authms
+    networks:
+      - demo
+
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
+    networks:
+      - demo
+
   cassandrapost:
     image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
     container_name: cassandrapost
@@ -57,6 +81,7 @@ services:
         #     ipv4_address: 172.28.1.11
     volumes:
       - cassandra-post-data:/var/lib/cassandra
+    restart: on-failure
 
   cassandrastory:
     image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
@@ -74,7 +99,7 @@ services:
       - cassandra-story-data:/var/lib/cassandra
 
   apigateway:
-    image: jelenavlajkov/kraken
+    image: jelenavlajkov/kraken:latest
     container_name: apigateway
     ports:
       - 8080:8080
@@ -86,7 +111,7 @@ services:
 
 
   frontend:
-    image: jelenavlajkov/nishtagramfrontend
+    image: jelenavlajkov/nishtagramfrontend:latest
     container_name: frontend
     ports:
       - 4200:4200
@@ -94,14 +119,14 @@ services:
       - demo
     restart: on-failure
 
-  # frontend-webshop:
-  #   image: frontend-webshop
-  #   container_name: frontend-webshop
-  #   ports:
-  #     - 4300:4200
-  #   networks:
-  #     - demo
-  #   restart: on-failure
+  frontend-webshop:
+    image: frontend-webshop
+    container_name: frontend-webshop
+    ports:
+      - 4300:4200
+    networks:
+      - demo
+    restart: on-failure
 
   authpostgres:
     image: postgres:latest
@@ -185,13 +210,20 @@ services:
     restart: on-failure
 
   authms:
-    image: jelenavlajkov/authms
+    image: jelenavlajkov/authms:latest
     container_name: authms
     depends_on:
       - authredis
       - authpostgres
       - sagaredis
+      - tracing
     environment:
+      - JAEGER_SERVICE_NAME=auth_service
+      - JAEGER_AGENT_HOST=tracing
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_MANAGER_HOST_PORT=jaeger:5778
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_PARAM=1
       - PORT=8091
       - USER_DOMAIN=userms
       - DOCKER_ENV=true
@@ -232,7 +264,7 @@ services:
       - demo
 
   webshop:
-    image: jelenavlajkov/webshop
+    image: jelenavlajkov/webshop:latest
     container_name: webshop
     depends_on:
       - webshoppostgres
@@ -249,10 +281,10 @@ services:
       - 8099:8099
     restart: on-failure
     volumes:
-      - ${PWD}/documents/:/app/src/documents/
+      - ${PWD}/documents/:/root/src/documents/
 
   adms:
-    image: jelenavlajkov/adms
+    image: jelenavlajkov/adms:latest
     container_name: adms
     depends_on:
       - cassandrapost
@@ -271,7 +303,7 @@ services:
 
 
   messagems:
-    image: jelenavlajkov/messagems
+    image: jelenavlajkov/messagems:latest
     container_name: messagems
     depends_on:
       - mongomessage
@@ -321,7 +353,7 @@ services:
       - demo
 
   followms:
-    image: jelenavlajkov/followms
+    image: jelenavlajkov/followms:latest
     container_name: followms
     depends_on:
       - mongofollow
@@ -338,7 +370,7 @@ services:
     restart: on-failure
 
   userms:
-    image: jelenavlajkov/userms
+    image: jelenavlajkov/userms:latest
     container_name: userms
     depends_on:
       - mongouser
@@ -357,7 +389,7 @@ services:
 
 
   postms:
-    image: jelenavlajkov/postms
+    image: jelenavlajkov/postms:latest
     container_name: postms
     depends_on:
       - cassandrapost
@@ -375,26 +407,26 @@ services:
     restart: on-failure
 
 
-  storyms:
-    image: jelenavlajkov/storyms
-    container_name: storyms
-    depends_on:
-      - cassandrastory
-    environment:
-      - PORT=8084
-      - USER_DOMAIN=userms
-      - FOLLOW_DOMAIN=followms
-      - DOCKER_ENV=true
-    networks:
-      - demo
-    ports:
-      - 8084:8084
-    volumes:
-      - cassandra-story-data:/data/db:rw
-    restart: on-failure
+  # storyms:
+  #   image: jelenavlajkov/storyms:latest
+  #   container_name: storyms
+  #   depends_on:
+  #     - cassandrastory
+  #   environment:
+  #     - PORT=8084
+  #     - USER_DOMAIN=userms
+  #     - FOLLOW_DOMAIN=followms
+  #     - DOCKER_ENV=true
+  #   networks:
+  #     - demo
+  #   ports:
+  #     - 8084:8084
+  #   volumes:
+  #     - cassandra-story-data:/data/db:rw
+  #   restart: on-failure
 
   searchms:
-    image: jelenavlajkov/searchms
+    image: jelenavlajkov/searchms:latest
     container_name: searchms
     depends_on:
       - mongosearch
@@ -409,7 +441,7 @@ services:
     restart: on-failure
 
   notificationms:
-    image: jelenavlajkov/notificationms
+    image: jelenavlajkov/notificationms:latest
     container_name: notificationms
     depends_on:
       - mongonotification
@@ -468,13 +500,12 @@ services:
 
 
 
-    # tracing:
-    #   image: jaegertracing/all-in-one
-    #   container_name: jaeger
-    #   ports:
-    #     - "6831:6831/udp"
-    #     - "6832:6832/udp"
-    #     - "16686:16686"
-    #     - "14268:14268"
-    #     - "14250:14250"
-    
+  tracing:
+    image: jaegertracing/all-in-one
+    container_name: jaeger
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"
+
+    networks:
+      - demo
