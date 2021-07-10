@@ -1977,7 +1977,7 @@
     },
 
     {
-      "endpoint": "/getAllAdsPerAgent",
+      "endpoint": "/getAdsByAgent",
       "headers_to_pass" : ["*"],
       "method": "GET",
       "output_encoding": "no-op",
@@ -2649,6 +2649,27 @@
       ]
     },
     {
+      "endpoint": "/isAllowedToSee/{messageId}",
+      "headers_to_pass" : ["*"],
+      "method": "GET",
+      "output_encoding": "no-op",
+      "extra_config": {},
+      "backend": [
+        {
+          "url_pattern": "/isAllowedToSee/{messageId}",
+          "host": [
+            "http://127.0.0.1:8052"
+          ],
+          "encoding": "no-op",
+          "sd": "static",
+          "method": "GET",
+          "extra_config": {},
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+
+    {
       "endpoint": "/recommend/{userId}",
       "headers_to_pass" : ["*"],
       "method": "GET",
@@ -2669,17 +2690,18 @@
       ]
     },
 
+
     {
-      "endpoint": "/isAllowedToSee/{messageId}",
+      "endpoint": "/generateStatisticReport",
       "headers_to_pass" : ["*"],
       "method": "GET",
       "output_encoding": "no-op",
       "extra_config": {},
       "backend": [
         {
-          "url_pattern": "/isAllowedToSee/{messageId}",
+          "url_pattern": "/ad/generateStatisticReport",
           "host": [
-            "http://127.0.0.1:8052"
+            "http://127.0.0.1:8093"
           ],
           "encoding": "no-op",
           "sd": "static",
@@ -2689,8 +2711,6 @@
         }
       ]
     }
-
-
   ]
 
 }

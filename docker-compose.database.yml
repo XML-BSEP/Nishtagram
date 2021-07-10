@@ -23,11 +23,15 @@ volumes:
     saga-redis-data: {}
     saga-redis.conf: {}
     message-data: {}
+<<<<<<< HEAD
+    neo4j-data: {}
+=======
     grafana: {}
     story-data: {}
     story-redis-data: {}
     story-redis.conf: {}
     post-data: {}
+>>>>>>> develop
 
 networks:
   cassandra:  # docker network where all cassandra nodes will be put in
@@ -124,6 +128,18 @@ services:
       environment: 
         - DOCKER_ENV=true
       volumes:
+<<<<<<< HEAD
+        - webshop-data:/var/lib/webshop
+
+    cassandra_post:
+      image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+      container_name: cassandra_post
+      mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+      ports:
+        - 7000:9042
+      expose: 
+        - 7000
+=======
         - search-data:/data/db:rw
       restart: on-failure
       networks:
@@ -138,11 +154,22 @@ services:
       environment:
         - PORT=8082
         - DOCKER_ENV=true
+>>>>>>> develop
       networks:
         - demo
       ports:
         - 8082:8082
       volumes:
+<<<<<<< HEAD
+        - cassandra-post-data:/var/lib/cassandra
+
+    cassandra_story:
+      image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+      container_name: cassandra_story
+      mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+      ports:
+        - 7001:9042
+=======
         - user-data:/data/db:rw
       restart: on-failure
 
@@ -156,6 +183,7 @@ services:
         - USER_DOMAIN=userms
         - FOLLOW_DOMAIN=followms
         - DOCKER_ENV=true
+>>>>>>> develop
       networks:
         - demo
       ports:
@@ -228,10 +256,17 @@ services:
         - '27018:27017'
       networks:
         - demo
+<<<<<<< HEAD
+      restart: always
+
+    # Mongo Express Web-based MongoDB admin interface
+  
+=======
       volumes:
         - user-data:/data/db
       restart: on-failure
 
+>>>>>>> develop
     mongonotification:
       image: 'mongo:4.2.6-bionic'
       container_name: mongonotification
@@ -248,9 +283,16 @@ services:
       container_name: cassandrastory
       mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
       ports:
+<<<<<<< HEAD
+        - "27022:27017"
+      volumes:
+        - webshop-mongo-data:/data/db
+      restart: always     
+=======
         - 7001:9042
       expose:
         - 7001
+>>>>>>> develop
       networks:
           - demo
       volumes:
@@ -303,3 +345,21 @@ services:
         - message-data:/data/db
       restart: on-failure
     # Mongo Express Web-based MongoDB admin interface
+
+    neo4j:
+      container_name: neo4j
+      image: neo4j
+      restart: always
+      environment: 
+          - NEO4J_dbms_connector_bolt_advertised__address=0.0.0.0:7687
+          - NEO4J_dbms_connector_bolt_listen__address=0.0.0.0:7687
+          - NEO4J_AUTH=neo4j/root
+      networks: 
+          - demo
+      ports: 
+          - 7474:7474
+          - 7687:7687 
+      volumes: 
+          - type: volume
+            source: neo4j-data
+            target: /data
