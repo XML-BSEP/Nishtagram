@@ -1,0 +1,237 @@
+version: '3.7'
+
+volumes:
+  follow-data: {}
+  auth-redis-data: {}
+  auth-redis.conf: {}
+  story-redis-data: {}
+  story-redis.conf: {}
+  auth-data: {}
+  user-data: {}
+  post-data: {}
+  cassandra-story-data: {}
+networks:
+  demo:
+    name: demo
+    driver: bridge
+  node_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+services:
+  cassandrapost:
+    image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+    container_name: cassandrapost
+    mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+    ports:
+      - 7000:9042
+    expose:
+      - 7000
+    networks:
+      node_net:
+        ipv4_address: 172.28.1.4
+    volumes:
+      - post-data:/var/lib/cassandra
+    restart: on-failure
+
+  # authpostgres:
+  #   image: postgres:latest
+  #   container_name: authpostgres
+  #   ports:
+  #     - 5432:5432
+  #   environment:
+  #     POSTGRES_USER: "postgres"
+  #     POSTGRES_PASSWORD: "root"
+  #     POSTGRES_DB: "authentication"
+  #   networks:
+  #     - demo
+  #     # node_net:
+  #     #   ipv4_address: 172.28.1.4
+  #   volumes:
+  #     - auth-data:/var/lib/auth
+  #   restart: on-failure
+
+  # authredis:
+  #   image: "redis:alpine"
+  #   command: redis-server
+  #   container_name: authredis
+  #   ports:
+  #     - "6380:6379"
+  #   volumes:
+  #     - auth-redis-data:/var/lib/redis
+  #     - auth-redis.conf:/usr/local/etc/redis/redis.conf
+  #   environment:
+  #     - REDIS_REPLICATION_MODE=master
+  #   networks:
+  #     - demo
+  #     # node_net:
+  #     #   ipv4_address: 172.28.1.4
+  #   restart: on-failure
+
+  # redisstory:
+  #   image: "redis:alpine"
+  #   command: redis-server
+  #   container_name: redisstory
+  #   ports:
+  #     - "6378:6379"
+  #   volumes:
+  #     - story-redis-data:/var/lib/redis
+  #     - story-redis.conf:/usr/local/etc/redis/redis.conf
+  #   environment:
+  #     - REDIS_REPLICATION_MODE=master
+  #   networks:
+  #     # - demo
+  #     node_net:
+  #       ipv4_address: 172.28.1.16
+  #   restart: on-failure
+    
+  # cassandrastory:
+  #   image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+  #   container_name: cassandrastory
+  #   mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+  #   ports:
+  #     - 7001:9042
+  #   volumes:
+  #     - cassandra-story-data:/var/lib/cassandra
+
+  # frontend:
+  #   image: frontimg   
+  #   container_name: frontend
+  #   ports:
+  #     - 4200:4200
+  #   networks:
+  #     # - demo
+  #     node_net:
+  #       ipv4_address: 172.28.1.17
+
+  
+
+  # apigateway:
+  #   image: apigateway
+  #   container_name: apigateway
+  #   environment:
+  #     - PORT=8080
+  #   ports:
+  #     - 8080:8080
+  #   networks:
+  #     - demo
+  #   restart: on-failure
+  
+      
+
+  # mongofollow:
+  #   image: 'mongo:4.2.6-bionic'
+  #   container_name: mongofollow
+  #   ports:
+  #     - '27017:27017'
+  #   networks:
+  #     - demo
+
+  #     # node_net:
+  #     #   ipv4_address: 172.28.1.6
+  #   volumes:
+  #     - follow-data:/data/db
+  #   restart: on-failure
+
+  # mongouser:
+  #   image: 'mongo:4.2.6-bionic'
+  #   container_name: mongouser
+  #   ports:
+  #     - 27018:27017
+  #   networks:
+  #     - demo
+  #     # node_net:
+  #     #   ipv4_address: 172.28.1.9
+  #   volumes:
+  #     - user-data:/data/db
+  #   restart: on-failure
+
+  # authms:
+  #   image: authimg
+  #   container_name: authms
+  #   depends_on:
+  #     - authredis
+  #     - authpostgres
+  #   environment:
+  #     - PORT=8091
+  #   networks:
+  #     - demo
+  #     # node_net:
+  #     #   ipv4_address: 172.28.1.4
+  #   ports:
+  #     - 8091:8091
+  #   volumes:
+  #     - auth-redis-data:/data/db:rw
+  #     - auth-data:/data/db:rw
+
+  # followms:
+  #   image: followimg
+  #   container_name: followms
+  #   depends_on:
+  #     - mongofollow
+  #   environment:
+  #     - PORT=8089
+  #   networks:
+  #     - demo
+  #     # node_net:
+  #     #   ipv4_address: 172.28.1.8
+  #   ports:
+  #     - 8089:8089
+  #   volumes:
+  #     - follow-data:/data/db:rw  
+  #   restart: on-failure
+      
+
+  # userms:
+  #   image: userimg
+  #   container_name: userms
+  #   depends_on:
+  #     - mongouser
+  #   environment:
+  #     - PORT=8082
+  #   networks:
+  #     - demo
+  #     # node_net:
+  #     #   ipv4_address: 172.28.1.9
+  #   ports:
+  #     - 8082:8082
+  #   volumes:
+  #     - user-data:/data/db:rw
+      # restart:
+      #   - always
+
+  postms:
+    image: postimg
+    container_name: postms
+    depends_on:
+      - cassandrapost
+    environment:
+      - PORT=8083
+    ports:
+      - 8083:8083
+    volumes:
+      - post-data:/data/db:rw
+    networks:
+      # - demo
+      node_net:
+        ipv4_address: 172.28.1.5
+    restart: on-failure
+      
+
+  # storyms:
+  #   image: storyimg
+  #   container_name: storyms
+  #   depends_on:
+  #     - cassandrastory
+  #   environment:
+  #     - PORT=8084
+  #   ports:
+  #     - 8084:8084
+  #   volumes:
+  #     - post-data:/data/db:rw
+  #   networks:
+  #     # - demo
+  #     node_net:
+  #       ipv4_address: 172.28.1.14
+  #   restart: on-failure

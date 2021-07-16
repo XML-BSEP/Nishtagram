@@ -1,0 +1,511 @@
+version: '3.7'
+
+volumes:
+  cassandra-data: {} 
+  cassandra-post-data: {} 
+  cassandra-ad-data: {} 
+  cassandra-story-data: {} 
+  redis-data: {}
+  redis.conf: {}
+  story-redis-data: {}
+  story-redis.conf: {}
+  auth-redis-data: {}
+  auth-redis.conf: {}
+  follow-data: {}
+  search-data: {}
+  user-data: {}
+  auth-data: {}
+  webshop-mongo-data: {}
+  etc-krakend : {}
+  notification-data: {}
+  webshop-data: {}
+  webshop-redis-data: {}
+  webshop-redis.conf: {}
+  data_exist: 
+  saga-redis-data: {}
+  saga-redis.conf: {}
+  message-data: {}
+  neo4j-data: {}
+  grafana: {}
+
+networks:
+  demo:
+    name: demo
+    driver: bridge
+  storynetwork:
+    name: storynetwork
+    driver: bridge
+  node_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+
+services:
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - 9090:9090
+    depends_on:
+      - authms
+    networks:
+      - demo
+
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
+    networks:
+      - demo
+
+  cassandrapost:
+    image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+    container_name: cassandrapost
+    mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+    ports:
+      - 7000:7000
+    expose:
+      - 7000
+    networks:
+        - demo
+        # node_net:
+        #     ipv4_address: 172.28.1.11
+    volumes:
+      - cassandra-post-data:/var/lib/cassandra
+    restart: on-failure
+
+  cassandrastory:
+    image: cassandra:3.11.8   # better to use a specific version, if you want to control upgrades
+    container_name: cassandrastory
+    mem_limit: 2g  # It's not strictly required, but it's better to have some memory limit
+    ports:
+      - 7001:9042
+    expose:
+      - 7001
+    networks:
+        - demo
+        # node_net:
+        #     ipv4_address: 172.28.1.11
+    volumes:
+      - cassandra-story-data:/var/lib/cassandra
+
+  apigateway:
+    image: jelenavlajkov/kraken:latest
+    container_name: apigateway
+    ports:
+      - 8080:8080
+    environment: 
+      - DOCKER_ENV=true
+    networks: 
+        - demo
+    restart: on-failure
+
+
+  frontend:
+    image: jelenavlajkov/nishtagramfrontend:latest
+    container_name: frontend
+    ports:
+      - 4200:4200
+    networks:
+      - demo
+    restart: on-failure
+
+  frontend-webshop:
+    image: frontend-webshop
+    container_name: frontend-webshop
+    ports:
+      - 4300:4200
+    networks:
+      - demo
+    restart: on-failure
+
+  authpostgres:
+    image: postgres:latest
+    container_name: authpostgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: "authentication"
+    networks:
+      - demo
+    volumes:
+      - auth-data:/var/lib/auth
+    restart: on-failure
+
+  sagaredis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - "6381:6379"
+    volumes:
+      - saga-redis-data:/var/lib/redis
+      - saga-redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:
+      - demo
+
+  authredis:
+    image: "redis:alpine"
+    command: redis-server
+    container_name: authredis
+    ports:
+      - "6380:6379"
+    volumes:
+      - auth-redis-data:/var/lib/redis
+      - auth-redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:
+      - demo
+    restart: on-failure
+
+  storyredis:
+    image: "redis:alpine"
+    command: redis-server
+    container_name: storyredis
+    ports:
+      - "6378:6379"
+    volumes:
+      - story-redis-data:/var/lib/redis
+      - story-redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:
+      - demo
+    restart: on-failure
+
+
+  mongofollow:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongofollow
+    ports:
+      - '27017:27017'
+    networks:
+      - demo
+    volumes:
+      - follow-data:/data/db
+    restart: on-failure
+
+  mongouser:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongouser
+    ports:
+      - '27018:27017'
+    networks:
+      - demo
+    volumes:
+      - user-data:/data/db
+    restart: on-failure
+
+  authms:
+    image: jelenavlajkov/authms:latest
+    container_name: authms
+    depends_on:
+      - authredis
+      - authpostgres
+      - sagaredis
+      - tracing
+    environment:
+      - JAEGER_SERVICE_NAME=auth_service
+      - JAEGER_AGENT_HOST=tracing
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_MANAGER_HOST_PORT=jaeger:5778
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_PARAM=1
+      - PORT=8091
+      - USER_DOMAIN=userms
+      - DOCKER_ENV=true
+    networks:
+      - demo
+    ports:
+      - 8091:8091
+    restart: on-failure
+
+
+  
+  webshoppostgres:
+    image: postgres:latest
+    container_name: webshoppostgres
+    restart: always
+    ports: 
+      - 5434:5432
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: webshop
+    networks:
+      - demo
+    volumes:
+      - webshop-data:/var/lib/webshop
+
+  webshopredis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - "6400:6379"
+    volumes:
+      - webshop-redis-data:/var/lib/redis
+      - webshop-redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:
+      - demo
+
+  webshop:
+    image: jelenavlajkov/webshop:latest
+    container_name: webshop
+    depends_on:
+      - webshoppostgres
+      - webshopredis
+      - mongowebshop
+    environment:
+      - PORT=8099
+      - USER_DOMAIN=userms
+      - DOCKER_ENV=true
+      - NISHTAGRAM_DOMAIN=adms
+    networks:
+      - demo
+    ports:
+      - 8099:8099
+    restart: on-failure
+    volumes:
+      - ${PWD}/documents/:/root/src/documents/
+
+  adms:
+    image: jelenavlajkov/adms:latest
+    container_name: adms
+    depends_on:
+      - cassandrapost
+    environment:
+      - PORT=8093
+      - DOCKER_ENV=true
+      - POST_DOMAIN=postms
+      - STORY_DOMAIN=storyms
+      - USER_DOMAIN=userms
+      - SEARCH_DOMAIN=searchms
+    networks:
+      - demo
+    ports:
+      - 8093:8093
+    restart: on-failure
+
+
+  messagems:
+    image: jelenavlajkov/messagems:latest
+    container_name: messagems
+    depends_on:
+      - mongomessage
+    environment:
+      - PORT=8052
+      - DOCKER_ENV=true
+      - FOLLOW_DOMAIN=followms
+      - USER_DOMAIN=userms
+    networks:
+      - demo
+    ports:
+      - 8052:8052
+    restart: on-failure
+
+  mongonotification:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongonotification
+    ports:
+      - '27020:27017'
+    volumes:
+      - notification-data:/data/db
+    restart: on-failure
+    networks:
+      - demo
+
+
+  mongosearch:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongo-search
+    ports:
+      - "27019:27017"
+    volumes:
+      - search-data:/data/db
+    restart: always
+    networks:
+      - demo
+
+  mongowebshop:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongowebshop
+    ports:
+      - "27022:27017"
+    volumes:
+      - webshop-mongo-data:/data/db
+    restart: always     
+    networks:
+      - demo
+
+  followms:
+    image: jelenavlajkov/followms:latest
+    container_name: followms
+    depends_on:
+      - mongofollow
+    environment:
+      - PORT=8089
+      - USER_DOMAIN=userms
+      - DOCKER_ENV=true
+    networks:
+      - demo
+    ports:
+      - 8089:8089
+    volumes:
+      - follow-data:/data/db:rw
+    restart: on-failure
+
+  userms:
+    image: jelenavlajkov/userms:latest
+    container_name: userms
+    depends_on:
+      - mongouser
+    environment:
+      - PORT=8082
+      - DOCKER_ENV=true
+      - AUTH_DOMAIN=authms
+      - FOLLOW_DOMAIN=followms
+    networks:
+      - demo
+    ports:
+      - 8082:8082
+    volumes:
+      - user-data:/data/db:rw
+    restart: on-failure
+
+
+  postms:
+    image: jelenavlajkov/postms:latest
+    container_name: postms
+    depends_on:
+      - cassandrapost
+    environment:
+      - PORT=8083
+      - USER_DOMAIN=userms
+      - FOLLOW_DOMAIN=followms
+      - DOCKER_ENV=true
+    networks:
+      - demo
+    ports:
+      - 8083:8083
+    volumes:
+      - cassandra-post-data:/data/db:rw
+    restart: on-failure
+
+
+  # storyms:
+  #   image: jelenavlajkov/storyms:latest
+  #   container_name: storyms
+  #   depends_on:
+  #     - cassandrastory
+  #   environment:
+  #     - PORT=8084
+  #     - USER_DOMAIN=userms
+  #     - FOLLOW_DOMAIN=followms
+  #     - DOCKER_ENV=true
+  #   networks:
+  #     - demo
+  #   ports:
+  #     - 8084:8084
+  #   volumes:
+  #     - cassandra-story-data:/data/db:rw
+  #   restart: on-failure
+
+  searchms:
+    image: jelenavlajkov/searchms:latest
+    container_name: searchms
+    depends_on:
+      - mongosearch
+    networks:
+      - demo
+    ports:
+      - 8087:8087
+    environment: 
+      - DOCKER_ENV=true
+    volumes:
+      - search-data:/data/db:rw
+    restart: on-failure
+
+  notificationms:
+    image: jelenavlajkov/notificationms:latest
+    container_name: notificationms
+    depends_on:
+      - mongonotification
+    networks:
+      - demo
+    environment: 
+      - DOCKER_ENV=true
+    ports:
+      - 8094:8094
+    volumes:
+      - notification-data:/data/db:rw
+    restart: on-failure
+
+  mongomessage:
+    image: 'mongo:4.2.6-bionic'
+    container_name: mongomessage
+    ports:
+      - '27021:27017'
+    volumes:
+      - message-data:/data/db
+    restart: on-failure
+    networks:
+      - demo
+
+  neo4j:
+    container_name: neo4j
+    image: neo4j
+    restart: always
+    environment: 
+        - NEO4J_dbms_connector_bolt_advertised__address=0.0.0.0:7687
+        - NEO4J_dbms_connector_bolt_listen__address=0.0.0.0:7687
+        - NEO4J_AUTH=neo4j/root
+    networks: 
+        - demo
+    ports: 
+        - 7474:7474
+        - 7687:7687 
+    volumes: 
+        - type: volume
+          source: neo4j-data
+          target: /data
+
+      
+  xmldb:
+    image: existdb/existdb:release
+    container_name: xmldb
+    restart: always
+    ports:
+        - 8095:8080
+    volumes:
+        - type: volume
+          source: data_exist
+          target: /exist-data
+    networks:
+        - demo
+
+
+
+  tracing:
+    image: jaegertracing/all-in-one
+    container_name: jaeger
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"
+
+    networks:
+      - demo
